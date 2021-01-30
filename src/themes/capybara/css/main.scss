@@ -1,0 +1,24 @@
+@import '~@storefront-ui/vue/styles';
+
+:root {
+  --border-radius: 0.625rem; // 10px
+
+  /** colors **/
+  @include generate-color-variants(--_c-green-primary, #18a353);
+
+  // Green
+  @include assign-color-variants(--c-primary, --_c-green-primary);
+  --c-light-variant: #F4F4F4;
+  .color-light-variant {
+    background: var(--c-light-variant);
+    color: black;
+  }
+
+  /* Custome SfButton */
+  --button-border-radius: 0.7rem;
+  --button-text-transform: none;
+
+  --breadcrumbs-list-item-seperator: ">";
+
+  --add-cart-step-text-color: #c1c1c1;
+}
