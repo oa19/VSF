@@ -77,7 +77,7 @@ export default {
 .filter-select {
   .filter-button-content {
     position: absolute;
-    z-index: 999;
+    z-index: 1;
     border: 1px solid #dedede;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;

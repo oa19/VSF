@@ -1,7 +1,7 @@
 <template>
   <SfButton
     class="sf-button--pure a-microcart-icon"
-    @click="openMicrocart"
+    @click="openMicrocart({type: 'microcart'})"
   >
     <SfIcon
       size="xs"
@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      openMicrocart: 'ui/toggleMicrocart'
+      openMicrocart: 'ui/toggleSidebar'
     })
   }
 };

@@ -13,6 +13,8 @@
     background: var(--c-light-variant);
     color: black;
   }
+  --c-grey-text: #444444;
+  --c-grey-text-light: rgb(170, 170, 170);;
 
   /* Custome SfButton */
   --button-border-radius: 0.7rem;
@@ -21,4 +23,8 @@
   --breadcrumbs-list-item-seperator: ">";
 
   --add-cart-step-text-color: #c1c1c1;
+
+  body {
+    --overlay-z-index: 2;
+  }
 }

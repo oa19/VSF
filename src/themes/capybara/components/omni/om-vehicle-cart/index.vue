@@ -1,21 +1,73 @@
 <template>
   <SfSidebar
-    :visible="isMicrocartOpen && isMicrocartVisible"
-    class="sf-sidebar--right sf-sidebar--icon o-microcart-panel"
+    :visible="isVehicleCartOpen && isVehicleCartVisible"
+    class="sf-sidebar--right sf-sidebar--icon om-vehicle-cart"
     @close="closeSidebar"
   >
-    <template v-if="totalItems" #content-top>
-      <SfProperty
+    <template #content-top>
+      <div class="sidebar-text">
+        My Saved Vehicles
+      </div>
+      <OmVehicleCartCard
+        :data="{
+          active: true,
+          imgUrl:
+            'https://uc.uxpin.com/files/1182538/1139806/2020_BMW_3Series_MSport_Saloon_600x450_-54bcb8eec58507bb248e528a5d7b1c23.jpg',
+          title: 'BMW 330i M Sport 2020',
+        }"
+      />
+      <OmVehicleCartCard
+        :data="{
+          active: false,
+          imgUrl:
+            'https://uc.uxpin.com/files/1182538/1139806/2020_Volkswagen_Polo_Match_400x267_-1d755c64121fae9c73d1b288e9404643.jpg',
+          title: 'Volkswagen Polo 1.0 TDI 2018',
+        }"
+      />
+      <OmVehicleCartCard
+        :data="{
+          active: true,
+          imgUrl:
+            'https://uc.uxpin.com/files/1182538/1139806/2020_BMW_3Series_MSport_Saloon_600x450_-54bcb8eec58507bb248e528a5d7b1c23.jpg',
+          title: 'BMW 330i M Sport 2020',
+        }"
+      />
+      <OmVehicleCartCard
+        :data="{
+          active: false,
+          imgUrl:
+            'https://uc.uxpin.com/files/1182538/1139806/2020_Volkswagen_Polo_Match_400x267_-1d755c64121fae9c73d1b288e9404643.jpg',
+          title: 'Volkswagen Polo 1.0 TDI 2018',
+        }"
+      />
+      <OmVehicleCartCard
+        :data="{
+          active: true,
+          imgUrl:
+            'https://uc.uxpin.com/files/1182538/1139806/2020_BMW_3Series_MSport_Saloon_600x450_-54bcb8eec58507bb248e528a5d7b1c23.jpg',
+          title: 'BMW 330i M Sport 2020',
+        }"
+      />
+      <OmVehicleCartCard
+        :data="{
+          active: false,
+          imgUrl:
+            'https://uc.uxpin.com/files/1182538/1139806/2020_Volkswagen_Polo_Match_400x267_-1d755c64121fae9c73d1b288e9404643.jpg',
+          title: 'Volkswagen Polo 1.0 TDI 2018',
+        }"
+      />
+      <!-- <SfProperty
         class="sf-property--large"
         :name="$t('Total items')"
         :value="productsCount"
-      />
+      /> -->
     </template>
     <transition name="fade" mode="out-in">
-      <div v-if="totalItems" key="my-cart" class="my-cart">
+      <div key="my-cart" class="my-cart">
         <div class="collected-product-list">
           <transition-group name="fade" tag="div">
-            <SfCollectedProduct
+            Hello
+            <!-- <SfCollectedProduct
               v-for="product in productsInCart"
               :key="product.id"
               :image="getThumbnailForProductExtend(product)"
@@ -48,11 +100,11 @@
               <template #more-actions>
                 <span />
               </template>
-            </SfCollectedProduct>
+            </SfCollectedProduct> -->
           </transition-group>
         </div>
       </div>
-      <div v-else key="empty-cart" class="empty-cart">
+      <!-- <div v-else key="empty-cart" class="empty-cart">
         <div class="empty-cart__banner">
           <SfImage
             :src="require('@storefront-ui/shared/icons/empty_cart.svg')"
@@ -70,7 +122,7 @@
             class="empty-cart__heading"
           />
         </div>
-      </div>
+      </div> -->
     </transition>
     <template #content-bottom>
       <transition name="fade">
@@ -94,12 +146,26 @@
             {{ $t("Go to checkout") }}
           </SfButton>
         </div>
-        <div v-else>
+        <div v-else class="sidebar-footer">
+          <div class="sidebar-text footer-text">
+            Add Another Vehicle to Your Garage
+          </div>
+          <SfIcon size="xxl" class="sf-header__icon">
+            <svg version="1.2" viewBox="0 0 24 24" preserveAspectRatio="none">
+              <g>
+                <path
+                  xmlns:default="http://www.w3.org/2000/svg"
+                  d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"
+                  style="fill: rgb(170, 170, 170)"
+                />
+              </g>
+            </svg>
+          </SfIcon>
           <SfButton
             class="sf-button--full-width color-primary"
             @click.native="startShopping"
           >
-            {{ $t("Start shopping") }}
+            {{ $t("Select Another Vehicle") }}
           </SfButton>
         </div>
       </transition>
@@ -115,6 +181,7 @@ import { getThumbnailForProduct } from '@vue-storefront/core/modules/cart/helper
 import { getProductPrice, getProductPriceFromTotals } from 'theme/helpers';
 import VueOfflineMixin from 'vue-offline/mixin';
 import onEscapePress from '@vue-storefront/core/mixins/onEscapePress';
+import OmVehicleCartCard from './om-vehicle-cart-card';
 
 import {
   SfButton,
@@ -123,7 +190,8 @@ import {
   SfPrice,
   SfImage,
   SfHeading,
-  SfSidebar
+  SfSidebar,
+  SfIcon
 } from '@storefront-ui/vue';
 
 export default {
@@ -134,19 +202,21 @@ export default {
     SfPrice,
     SfImage,
     SfHeading,
-    SfSidebar
+    SfSidebar,
+    OmVehicleCartCard,
+    SfIcon
   },
   mixins: [VueOfflineMixin, onEscapePress],
   data () {
     return {
-      isMicrocartVisible: false
+      isVehicleCartVisible: false
     };
   },
   computed: {
     ...mapGetters({
       productsInCart: 'cart/getCartItems',
       totals: 'cart/getTotals',
-      isMicrocartOpen: 'ui/isMicrocartOpen'
+      isVehicleCartOpen: 'ui/isVehicleCartOpen'
     }),
     totalItems () {
       return this.productsInCart.length;
@@ -201,22 +271,45 @@ export default {
     }
   },
   mounted () {
-    this.isMicrocartVisible = true;
+    this.isVehicleCartVisible = true;
   }
 };
 </script>
 
 <style lang="scss" scoped>
 @import "~@storefront-ui/shared/styles/helpers/breakpoints";
-.o-microcart-panel {
+
+.om-vehicle-cart {
+  background: var(--c-light-variant);
   @include for-mobile {
     ::v-deep .sf-sidebar__aside {
       max-height: calc(100vh - var(--bottom-navigation-height));
     }
   }
   @include for-desktop {
+    --sidebar-width: 34.5rem;
     --sidebar-bottom-padding: var(--spacer-base);
     --sidebar-content-padding: var(--spacer-base);
+  }
+  ::v-deep .sf-sidebar__aside {
+    --sidebar-background: var(--c-light-variant);
+    overflow-y: auto;
+  }
+  ::v-deep .sf-icon.size-xxl {
+    --icon-size: 12.5rem;
+    margin-top: -25px;
+  }
+  .sidebar-text {
+    font-size: var(--spacer-base);
+    font-weight: 700;
+    color: var(--c-grey-text);
+    margin-bottom: var(--spacer-xl);
+    &.footer-text {
+      color: var(--c-grey-text-light);
+      margin-bottom: 0;
+      padding: 0 var(--spacer-2xl);
+      text-align: center;
+    }
   }
 }
 .my-cart {
@@ -231,6 +324,16 @@ export default {
     --price-font-weight: var(--font-semibold);
     margin: 0 0 var(--spacer-xs) 0;
   }
+}
+.sidebar-footer {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.sf-button--full-width {
+  font-size: 24px;
 }
 .empty-cart {
   --heading-subtitle-margin: 0 0 var(--spacer-xl) 0;

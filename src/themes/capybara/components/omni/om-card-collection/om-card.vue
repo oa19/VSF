@@ -49,6 +49,7 @@ export default {
   display: flex;
   flex-direction: column;
   width: 100% !important;
+  color: var(--c-grey-text);
   h1 {
     margin-top: var(--spacer-xl);
     margin-bottom: 0;

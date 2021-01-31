@@ -7,7 +7,7 @@
       image="/assets/hero/background.jpg"
     >
       <template #button>
-        <div class="cookie__icon">
+        <div class="check__icon">
           <SfCircleIcon
             class="icon"
             icon="chevron_down"
@@ -80,6 +80,11 @@ export default {
     color: white;
     cursor: pointer;
   }
+  .check__icon {
+    position: relative;
+    top: -65px;
+    right: 0;
+  }
 }
 
 ::v-deep {
@@ -87,7 +92,6 @@ export default {
   .sf-button:disabled {
     --button-background: var(--c-primary);
   }
-
   --button-size: 2.25rem;
 }
 </style>

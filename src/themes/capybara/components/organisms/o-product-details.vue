@@ -26,11 +26,6 @@
           :stock="productStock"
         />
       </div>
-      <MProductAdditionalInfo
-        :product="product"
-        :reviews="reviews"
-        :attributes="productAttributes"
-      />
     </div>
   </div>
 </template>
@@ -144,6 +139,7 @@ export default {
       max-width: 32.625rem;
       margin: 0 0 0 7.5rem;
       padding: 0;
+      width: 100%;
     }
   }
   &__add-to-cart {

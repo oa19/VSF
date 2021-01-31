@@ -51,7 +51,7 @@
       </template>
       <template #header-icons>
         <div class="sf-header__icons">
-          <AAccountIcon class="sf-header__action" />
+          <OmVehicleIcon class="sf-header__action" />
           <AAccountIcon class="sf-header__action" />
           <AMicrocartIcon class="sf-header__action" />
         </div>
@@ -80,6 +80,7 @@ import MMenu from 'theme/components/molecules/m-menu';
 import { formatCategoryLink } from '@vue-storefront/core/modules/url/helpers';
 import { getTopLevelCategories } from 'theme/helpers';
 import OmHeaderStatus from 'theme/components/omni/om-header-status.vue'
+import OmVehicleIcon from 'theme/components/omni/icons/om-vehicle-icon.vue'
 
 export default {
   name: 'OHeader',
@@ -93,7 +94,8 @@ export default {
     MMenu,
     SfOverlay,
     OmHeaderStatus,
-    SfBreadcrumbs
+    SfBreadcrumbs,
+    OmVehicleIcon
   },
   data () {
     return {

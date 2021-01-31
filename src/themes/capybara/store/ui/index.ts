@@ -7,7 +7,10 @@ export const uiStore = {
     modal: modalStore
   },
   state: {
-    sidebar: false,
+    sidebar: {
+      open: false,
+      type: 'microcart'
+    },
     microcart: false,
     searchpanel: false,
     overlay: false,
@@ -22,6 +25,14 @@ export const uiStore = {
     isReviewProductTab: false,
     isMobileMenu: false
   },
+  getters: {
+    isMicrocartOpen: ({ sidebar }) => {
+      return sidebar.type === 'microcart' && sidebar.open;
+    },
+    isVehicleCartOpen: ({ sidebar }) => {
+      return sidebar.type === 'vehiclecart' && sidebar.open;
+    }
+  },
   mutations: {
     setCheckoutMode (state, action) {
       state.checkoutMode = action === true;
@@ -31,8 +42,8 @@ export const uiStore = {
       state.overlay = action === true;
     },
     setSidebar (state, action) {
-      state.sidebar = action === true;
-      state.overlay = action === true;
+      state.sidebar = action;
+      state.overlay = true;
     },
     setSubmenu (state, { id, depth }) {
       if (id) {
@@ -55,32 +66,44 @@ export const uiStore = {
       state.loader = action === true;
     },
     setWebpSupport (state, action) {
-      state.isWebpSupported = action
+      state.isWebpSupported = action;
     },
     setReviewProductTab (state, action) {
-      state.isReviewProductTab = action
+      state.isReviewProductTab = action;
     },
     openMenu (state) {
-      state.isMobileMenu = true
+      state.isMobileMenu = true;
     },
     closeMenu (state) {
-      state.isMobileMenu = false
+      state.isMobileMenu = false;
     }
   },
   actions: {
     toggleMicrocart ({ commit, state }) {
       commit('setMicrocart', !state.microcart);
     },
+    toggleSidebar ({ commit, state }, { type }) {
+      if (type !== state.type) {
+        commit('setSidebar', { open: true, type });
+      } else {
+        commit('setSidebar', { open: !state.sidebar.open, type });
+      }
+    },
     checkWebpSupport ({ commit }) {
       supportsWebP.then(isWebpSupported => {
         commit('setWebpSupport', isWebpSupported);
-      })
+      });
     },
     closeMicrocart ({ commit, state }) {
-      if (state.microcart) commit('setMicrocart', false)
+      if (state.microcart) commit('setMicrocart', false);
+    },
+    closeSidebar ({ commit, state }) {
+      if (state.sidebar) {
+        commit('setSidebar', { open: false, type: state.sidebar.type });
+      }
     },
     closeWishlist ({ commit, state }) {
-      if (state.wishlist) commit('setWishlist', false)
+      if (state.wishlist) commit('setWishlist', false);
     }
   }
 };

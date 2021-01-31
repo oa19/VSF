@@ -1,53 +1,9 @@
 <template>
   <div id="home">
-    <SfHero
-      class="hero"
-      :slider-options="{
-        animationDuration: 2000,
-        rewindDuration: 2000
-      }"
-    >
-      <SfHeroItem
-        v-for="(hero, i) in heroes"
-        :key="i"
-        :title="hero.title"
-        :subtitle="hero.subtitle"
-        :button-text="hero.buttonText"
-        :background="hero.background"
-        :image="hero.image"
-        :class="hero.className"
-      />
-    </SfHero>
-
-    <SfBannerGrid :banner-grid="1" class="banner-grid">
-      <template v-for="(banner, i) in banners" #[banner.slot]>
-        <router-link :key="i" :to="banner.link">
-          <SfBanner
-            :subtitle="banner.subtitle"
-            :title="banner.title"
-            :description="banner.description"
-            :button-text="banner.buttonText"
-            :image="banner.image"
-          />
-        </router-link>
-      </template>
-    </SfBannerGrid>
-
-    <ONewsletter />
-
-    <SfSection :title-heading="$t('Bestsellers')" class="section">
-      <lazy-hydrate :trigger-hydration="!loading">
-        <m-product-carousel :products="newCollection" />
-      </lazy-hydrate>
-    </SfSection>
-
-    <SfSection
-      v-if="isOnline"
-      :title-heading="$t('Share Your Look')"
-      subtitle-heading="#YOURLOOK"
-      class="section"
-    >
-      <AImagesGrid :images="instagramImages" />
+    <OmHero />
+    <SfSection class="section" :title-heading="$t('Shop By Brand')">
+      <OmBrandLogos class="brand-logos" />
+      <OmCardCollection class="card-collection" />
     </SfSection>
   </div>
 </template>
@@ -61,12 +17,17 @@ import MProductCarousel from 'theme/components/molecules/m-product-carousel';
 import ONewsletter from 'theme/components/organisms/o-newsletter';
 import AImagesGrid from 'theme/components/atoms/a-images-grid';
 import { checkWebpSupport } from 'theme/helpers'
+import OmHero from 'theme/components/omni/om-hero/index'
+import OmBrandLogos from 'theme/components/omni/om-brand-logos'
+import OmCardCollection from 'theme/components/omni/om-card-collection/index'
+
 import {
   SfHero,
   SfSection,
   SfBannerGrid,
   SfBanner
 } from '@storefront-ui/vue';
+
 export default {
   name: 'Home',
   components: {
@@ -77,7 +38,10 @@ export default {
     SfBanner,
     MProductCarousel,
     ONewsletter,
-    AImagesGrid
+    AImagesGrid,
+    OmHero,
+    OmBrandLogos,
+    OmCardCollection
   },
   data () {
     return {
@@ -119,6 +83,7 @@ export default {
   async asyncData ({ store, context }) {
     Logger.info('Calling asyncData in Home (theme)')();
     if (context) context.output.cacheTags.add(`home`)
+
     await Promise.all([
       store.dispatch('homepage/fetchNewCollection'),
       store.dispatch('promoted/updateHeadImage'),
@@ -150,11 +115,12 @@ export default {
 
 <style lang="scss" scoped>
 @import "~@storefront-ui/shared/styles/helpers/breakpoints";
+
 #home {
   box-sizing: border-box;
-  padding: 0 var(--spacer-sm);
+  padding: var(--spacer-sm) var(--spacer-sm);
+  background: var(--c-light-variant);
   @include for-desktop {
-    padding: 0 var(--spacer-sm);
     max-width: 1272px;
     margin: 0 auto;
   }
@@ -167,6 +133,19 @@ export default {
   margin: var(--spacer-base) 0;
   @include for-desktop {
     margin: var(--spacer-2xl) 0;
+  }
+}
+.brand-logos {
+  margin-bottom: var(--spacer-xl);
+}
+::v-deep .section {
+  padding: 0 var(--spacer-xl);
+  --section-margin: var(--spacer-xl) 0;
+  --section-content-margin: var(--spacer-xl) 0 0 0;
+  .sf-heading__title.sf-heading__title--h2 {
+    font-weight: 700;
+    font-size: 26px;
+    color:#444444
   }
 }
 </style>
