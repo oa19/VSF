@@ -1,0 +1,37 @@
+{
+  "vehicles": [
+    {
+      "level1": "BMW",
+      "level2": "4 Series",
+      "level3": "2020",
+      "level4": "Coupe - 2 Door",
+      "level5": "Diesel",
+      "level6": "2.0",
+      "level7": "M-Sport",
+      "National_code": "88328383",
+      "Image": "https://res.cloudinary.com/omniauto/image/upload/v1616069903/cosySec_gjqyul.png"
+    },
+    {
+      "level1": "BMW",
+      "level2": "4 Series",
+      "level3": "2020",
+      "level4": "Coupe - 4 Door",
+      "level5": "Diesel",
+      "level6": "2.0",
+      "level7": "M-Sport X-Drive",
+      "National_code": "94949494",
+      "Image": "https://res.cloudinary.com/omniauto/image/upload/v1616069903/cosySec_gjqyul.png"
+    },
+    {
+      "level1": "Nissan",
+      "level2": "Juke",
+      "level3": "2020",
+      "level4": "Hatchback",
+      "level5": "Petrol",
+      "level6": "1.2",
+      "level7": "N-Connecta",
+      "National_code": "92929292",
+      "Image": "https://res.cloudinary.com/omniauto/image/upload/v1616070130/s0523138_koxc7p.jpg"
+    }
+  ]
+}

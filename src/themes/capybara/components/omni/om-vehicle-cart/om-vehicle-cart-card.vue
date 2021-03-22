@@ -48,6 +48,7 @@ export default {
 @import "~@storefront-ui/shared/styles/helpers/breakpoints";
 
 .om-vehicle-cart-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   border-radius: var(--border-radius);

@@ -24,50 +24,18 @@
           title: 'Volkswagen Polo 1.0 TDI 2018',
         }"
       />
-      <OmVehicleCartCard
-        :data="{
-          active: true,
-          imgUrl:
-            'https://uc.uxpin.com/files/1182538/1139806/2020_BMW_3Series_MSport_Saloon_600x450_-54bcb8eec58507bb248e528a5d7b1c23.jpg',
-          title: 'BMW 330i M Sport 2020',
-        }"
-      />
-      <OmVehicleCartCard
-        :data="{
-          active: false,
-          imgUrl:
-            'https://uc.uxpin.com/files/1182538/1139806/2020_Volkswagen_Polo_Match_400x267_-1d755c64121fae9c73d1b288e9404643.jpg',
-          title: 'Volkswagen Polo 1.0 TDI 2018',
-        }"
-      />
-      <OmVehicleCartCard
-        :data="{
-          active: true,
-          imgUrl:
-            'https://uc.uxpin.com/files/1182538/1139806/2020_BMW_3Series_MSport_Saloon_600x450_-54bcb8eec58507bb248e528a5d7b1c23.jpg',
-          title: 'BMW 330i M Sport 2020',
-        }"
-      />
-      <OmVehicleCartCard
-        :data="{
-          active: false,
-          imgUrl:
-            'https://uc.uxpin.com/files/1182538/1139806/2020_Volkswagen_Polo_Match_400x267_-1d755c64121fae9c73d1b288e9404643.jpg',
-          title: 'Volkswagen Polo 1.0 TDI 2018',
-        }"
-      />
       <!-- <SfProperty
         class="sf-property--large"
         :name="$t('Total items')"
         :value="productsCount"
       /> -->
     </template>
-    <transition name="fade" mode="out-in">
+    <!-- <transition name="fade" mode="out-in">
       <div key="my-cart" class="my-cart">
         <div class="collected-product-list">
           <transition-group name="fade" tag="div">
             Hello
-            <!-- <SfCollectedProduct
+            <SfCollectedProduct
               v-for="product in productsInCart"
               :key="product.id"
               :image="getThumbnailForProductExtend(product)"
@@ -100,11 +68,11 @@
               <template #more-actions>
                 <span />
               </template>
-            </SfCollectedProduct> -->
+            </SfCollectedProduct>
           </transition-group>
         </div>
       </div>
-      <!-- <div v-else key="empty-cart" class="empty-cart">
+      <div v-else key="empty-cart" class="empty-cart">
         <div class="empty-cart__banner">
           <SfImage
             :src="require('@storefront-ui/shared/icons/empty_cart.svg')"
@@ -122,8 +90,8 @@
             class="empty-cart__heading"
           />
         </div>
-      </div> -->
-    </transition>
+      </div>
+    </transition> -->
     <template #content-bottom>
       <transition name="fade">
         <div v-if="totalItems">
@@ -280,7 +248,9 @@ export default {
 @import "~@storefront-ui/shared/styles/helpers/breakpoints";
 
 .om-vehicle-cart {
-  background: var(--c-light-variant);
+  ::v-deep .sf-sidebar__aside {
+    --sidebar-background: var(--c-light-variant);
+  }
   @include for-mobile {
     ::v-deep .sf-sidebar__aside {
       max-height: calc(100vh - var(--bottom-navigation-height));
@@ -290,14 +260,17 @@ export default {
     --sidebar-width: 34.5rem;
     --sidebar-bottom-padding: var(--spacer-base);
     --sidebar-content-padding: var(--spacer-base);
-  }
-  ::v-deep .sf-sidebar__aside {
-    --sidebar-background: var(--c-light-variant);
-    overflow-y: auto;
+    ::v-deep .sf-sidebar__top {
+      overflow-y: auto;
+    }
+    ::v-deep .sf-sidebar__content {
+      height: 0;
+    }
   }
   ::v-deep .sf-icon.size-xxl {
     --icon-size: 12.5rem;
     margin-top: -25px;
+    height: 10.5rem;
   }
   .sidebar-text {
     font-size: var(--spacer-base);

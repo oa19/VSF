@@ -1,6 +1,6 @@
 <template>
   <div class="om-brand-logos">
-    <div v-for="logo in logosMock" :key="logo" class="logo-wrapper">
+    <div v-for="(logo, index) in logosMock" :key="index" class="logo-wrapper">
       <SfImage :src="logo" />
     </div>
   </div>

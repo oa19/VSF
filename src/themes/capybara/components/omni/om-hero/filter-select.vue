@@ -2,12 +2,12 @@
   <div class="filter-select">
     <SfButton
       class="color-light-variant button-wrapper"
-      @click="selectButtonHandler()"
+      @click.stop="selectButtonHandler()"
     >
       <div class="button-wrapper">
-        <span class="button-text">{{ selectButtonData.text }}</span>
+        <span class="button-text">{{ dropdownData.text }}</span>
         <SfIcon
-          v-if="selectButtonData.popupIsOpen"
+          v-if="dropdownData.showDropdown"
           icon="chevron_up"
           size="xxs"
           color="black"
@@ -24,21 +24,22 @@
         />
       </div>
     </SfButton>
-    <div class="filter-button-content" v-show="selectButtonData.popupIsOpen">
+    <div
+      class="filter-button-content"
+      v-if="dropdownData.showDropdown"
+      v-click-outside="closePopup"
+    >
+      <div v-if="!dropdownData.items.length" class="no-data">
+        No data
+      </div>
       <SfButton
-        v-for="(d, index) in popupData"
-        :key="index"
+        v-for="(item, i) in dropdownData.items"
+        :key="i"
+        @click.stop="onClickFilterItem(item)"
         class="color-light-variant"
       >
         <div class="button-wrapper filter-button">
-          <SfIcon
-            icon="chevron_up"
-            size="xxs"
-            color="black"
-            view-box="0 0 24 24"
-            :coverage="1"
-          />
-          <span class="button-text">{{ d.text }} ({{ d.quantity }})</span>
+          <span class="button-text">{{ item }}</span>
         </div>
       </SfButton>
     </div>
@@ -53,22 +54,17 @@ export default {
     SfButton,
     SfIcon
   },
-  props: {
-    selectButtonData: {
-      type: Object
-    },
-    popupData: {
-      type: Array
-    }
-  },
-  data () {
-    return {
-      mock: [1, 2, 3, 4]
-    };
-  },
+  props: ['dropdownData', 'dropdownIndex'],
   methods: {
     selectButtonHandler () {
-      this.$emit('update-status', this.selectButtonData.text);
+      this.$emit('toggle-dropdown', this.dropdownIndex);
+    },
+    closePopup () {
+      this.$emit('hide-dropdown');
+    },
+    onClickFilterItem (data) {
+      this.$emit('dropdown-item-click', data, this.dropdownIndex);
+      this.$emit('toggle-dropdown', this.dropdownIndex + 1);
     }
   }
 };
@@ -86,6 +82,10 @@ export default {
     background: white;
     border-radius: var(--border-radius);
     margin-top: 10px;
+    min-width: 200px;
+    align-items: center;
+    max-height: 150px;
+    overflow-y: auto;
   }
   .button-wrapper {
     display: flex;
@@ -107,6 +107,12 @@ export default {
         margin-left: 0.5rem;
       }
     }
+  }
+  .no-data {
+    grid-column: 2;
+  }
+  .color-light-variant {
+    width: 100%;
   }
 }
 </style>

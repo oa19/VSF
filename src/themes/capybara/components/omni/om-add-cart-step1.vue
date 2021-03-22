@@ -18,7 +18,7 @@
         </div>
       </template>
     </SfCallToAction>
-    <div class="footer">
+    <div class="footer" @click="openVehicleCart({ type: 'vehiclecart' })">
       <span>Change Vehicle</span>
       <SfIcon
         icon="chevron_right"
@@ -26,7 +26,6 @@
         color="white"
         role="button"
         class="button"
-        @click="removeProduct(product)"
       />
     </div>
   </div>
@@ -40,6 +39,7 @@ import {
   SfCircleIcon,
   SfButton
 } from '@storefront-ui/vue';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'OmAddCartStep1',
@@ -56,9 +56,9 @@ export default {
     };
   },
   methods: {
-    changeVehicle () {
-      console.log('hey');
-    }
+    ...mapActions({
+      openVehicleCart: 'ui/toggleSidebar'
+    })
   }
 };
 </script>

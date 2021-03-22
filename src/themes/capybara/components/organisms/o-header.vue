@@ -136,10 +136,6 @@ export default {
         document.documentElement.style.overflow = ''
       }
     }
-  },
-  updated () {
-    console.log(this.$route, 'router')
-    console.log(this.breadcrumbs, 'router')
   }
 };
 </script>

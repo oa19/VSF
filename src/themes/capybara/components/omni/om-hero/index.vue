@@ -11,26 +11,32 @@
   >
     <template #button>
       <div class="hero-content">
-        <FilterSelect
-          v-for="(data, i) in filterSelectBtnsData"
-          :key="i"
-          :selectButtonData="data"
-          :popupData="filterPopUpMock"
-          @update-status="changeStatus"
-        />
+        <div class="hero-content-selector">
+          <FilterSelect
+            v-for="(data, i) in selectorData"
+            :key="i"
+            :dropdown-data="getCurrentSelectorData(i, data)"
+            :dropdown-index="i"
+            @toggle-dropdown="toggleDropdown"
+            @hide-dropdown="hideDropdown"
+            @dropdown-item-click="dropdownItemClick"
+          />
+        </div>
         <SfButton
           class="color-primary search-button"
-          @click="showNewsletterPopup"
+          @click="onSearch"
+          :disabled="disableSearch()"
         >
           <div class="search-button-content">
-            Search
-            <SfIcon
+            SELECT &<br>
+            SAVE MODEL
+            <!-- <SfIcon
               icon="search"
               size="xs"
               color="white"
               view-box="0 0 24 24"
               :coverage="1"
-            />
+            /> -->
           </div>
         </SfButton>
       </div>
@@ -50,9 +56,20 @@
 import { mapState, mapActions } from 'vuex';
 import { SfCallToAction, SfButton, SfIcon } from '@storefront-ui/vue';
 import { checkWebpSupport } from 'theme/helpers';
-import { ModalList } from 'theme/store/ui/modals';
 import LHero from 'theme/components/lexas/l-hero';
 import FilterSelect from './filter-select';
+import vehicleData from 'theme/resource/vehicles.json';
+
+export const dropdownKeys = [
+  'Brand',
+  'Model',
+  'Year',
+  'Bodytype',
+  'Fuel',
+  'Engine Size',
+  'Trim'
+];
+export const VEHICLE_DATA_KEY = 'vehicles';
 
 export default {
   name: 'OmHero',
@@ -79,35 +96,103 @@ export default {
         ],
         this.isWebpSupported
       )[0].image;
+    },
+    vehicles () {
+      return vehicleData[VEHICLE_DATA_KEY];
     }
   },
   data () {
     return {
-      filterSelectBtnsData: [
-        { text: 'Select Make', popupIsOpen: false },
-        { text: 'Select Model', popupIsOpen: false },
-        { text: 'Select Trim', popupIsOpen: false },
-        { text: 'Select Year', popupIsOpen: false }
-      ],
-      filterPopUpMock: new Array(9).fill({ icon: '', text: 'Abarth', quantity: 3 })
+      initialSelectorData: [],
+      selectorData: [],
+      selectedItems: {}
     };
   },
   methods: {
     ...mapActions('ui', {
       openModal: 'openModal'
     }),
-    showNewsletterPopup () {
-      this.openModal({ name: ModalList.Newsletter });
+    onSearch () {
+      const filteredVehicles = this.vehicles.filter((data) => {
+        return Object.values(this.selectedItems).every(
+          (item) => Object.values(data).indexOf(item) >= 0
+        );
+      });
+      const national_code = (filteredVehicles.length) ? filteredVehicles[0]['National_code'] : ''
+      console.log(national_code, 'Hey')
+      // this.openModal({ name: ModalList.Newsletter });
     },
-    changeStatus (text) {
-      this.filterSelectBtnsData.forEach((d) => {
-        if (d.text === text) {
-          d.popupIsOpen = !d.popupIsOpen
+    toggleDropdown (kindIndex) {
+      this.selectorData = this.selectorData.map((d, index) => {
+        if (index === kindIndex) {
+          d.showDropdown = !d.showDropdown;
         } else {
-          d.popupIsOpen = false
+          d.showDropdown = false;
         }
-      })
+        return d;
+      });
+    },
+    hideDropdown () {
+      this.selectorData.forEach((d) => {
+        d.showDropdown = false;
+      });
+    },
+    getCurrentSelectorData (index, dropdownItems) {
+      const newDropdownItems = Object.assign(dropdownItems);
+      if (this.selectedItems[`level${index + 1}`]) {
+        const filteredVehicles = this.vehicles.filter((data) => {
+          return Object.values(this.selectedItems).every(
+            (item) => Object.values(data).indexOf(item) >= 0
+          );
+        });
+        if (index + 2 <= dropdownKeys.length) {
+          const nextDropdownItems = this.getLevelNDropdownItems(
+            filteredVehicles,
+            index + 2
+          );
+          this.selectorData[index + 1].items = nextDropdownItems;
+        }
+      }
+
+      return newDropdownItems;
+    },
+    dropdownItemClick (data, index) {
+      this.selectedItems[`level${index + 1}`] = data;
+      for (let i = index + 1; i < dropdownKeys.length; i++) {
+        delete this.selectedItems[`level${i + 1}`];
+      }
+    },
+    getLevelNDropdownItems (source, level) {
+      const dropdownItems = source.reduce((result, vehicle) => {
+        if (!result.includes(vehicle[`level${level}`])) {
+          result = [...result, vehicle[`level${level}`]];
+        }
+        return result;
+      }, []);
+
+      return dropdownItems;
+    },
+    disableSearch () {
+      return Object.values(this.selectedItems).length !== dropdownKeys.length;
     }
+  },
+  mounted () {
+    const level1DropdownItems = this.getLevelNDropdownItems(this.vehicles, 1);
+    this.initialSelectorData = dropdownKeys.map((key, index) => {
+      const result = {
+        text: `Select ${key}`,
+        showDropdown: false,
+        items: []
+      };
+      if (index === 0) {
+        result.items = level1DropdownItems;
+      }
+      return result;
+    });
+    /*
+      {"text":"Select Brand","showDropdown":false,"items":["BMW","Nissan"]}
+     */
+    this.selectorData = this.initialSelectorData;
   }
 };
 </script>
@@ -142,20 +227,25 @@ export default {
       justify-content: space-between;
       align-items: center;
     }
+    .hero-content-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-gap: 10px;
+      align-items: center;
+    }
+    .hero-content-selector::after {
+      content: "";
+      flex: auto;
+    }
   }
   .search-button {
     width: 8.75rem;
+    margin-left: 10px;
     .search-button-content {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      .sf-icon {
-        margin-left: 1rem;
-      }
     }
-  }
-  ::v-deep .filter-select:last-child .select-button {
-    margin-right: 0;
   }
 }
 </style>

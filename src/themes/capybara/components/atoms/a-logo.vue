@@ -33,4 +33,8 @@ export default {
 .a-logo {
   display: inline-flex;
 }
+::v-deep .sf-image img {
+  width: 135px;
+  height: auto;
+}
 </style>
