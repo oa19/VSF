@@ -15,11 +15,17 @@
         :reviews="reviews"
       />
       <div>
-        <h2 class="add-cart-step-text">Step 1 - Check Compatibility</h2>
-        <OmAddCartStep1></OmAddCartStep1>
-        <h2 class="add-cart-step-text">Step 2 - Select Delivery Method</h2>
-        <OmAddCartStep2></OmAddCartStep2>
-        <h2 class="add-cart-step-text">Step 3 - Select Quantity</h2>
+        <h2 class="add-cart-step-text">
+          Step 1 - Check Compatibility
+        </h2>
+        <OmAddCartStep1 />
+        <h2 class="add-cart-step-text">
+          Step 2 - Select Delivery Method
+        </h2>
+        <OmAddCartStep2 />
+        <h2 class="add-cart-step-text">
+          Step 3 - Select Quantity
+        </h2>
         <MProductAddToCart
           class="product__add-to-cart"
           :product="product"

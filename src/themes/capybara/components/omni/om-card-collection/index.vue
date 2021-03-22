@@ -9,13 +9,11 @@
 </template>
 
 <script>
-import { SfImage } from '@storefront-ui/vue';
 import OmCard from './om-card';
 
 export default {
   name: 'OmCardCollection',
   components: {
-    SfImage,
     OmCard
   },
   data () {

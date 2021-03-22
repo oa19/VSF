@@ -54,7 +54,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import { SfCallToAction, SfButton, SfIcon } from '@storefront-ui/vue';
+import { SfCallToAction, SfButton } from '@storefront-ui/vue';
 import { checkWebpSupport } from 'theme/helpers';
 import LHero from 'theme/components/lexas/l-hero';
 import FilterSelect from './filter-select';
@@ -77,8 +77,7 @@ export default {
     SfCallToAction,
     SfButton,
     LHero,
-    FilterSelect,
-    SfIcon
+    FilterSelect
   },
   computed: {
     ...mapState({

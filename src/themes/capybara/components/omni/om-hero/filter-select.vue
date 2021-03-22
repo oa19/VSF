@@ -54,7 +54,16 @@ export default {
     SfButton,
     SfIcon
   },
-  props: ['dropdownData', 'dropdownIndex'],
+  props: {
+    dropdownData: {
+      type: Object,
+      default: () => {}
+    },
+    dropdownIndex: {
+      type: Number,
+      default: 1
+    }
+  },
   methods: {
     selectButtonHandler () {
       this.$emit('toggle-dropdown', this.dropdownIndex);

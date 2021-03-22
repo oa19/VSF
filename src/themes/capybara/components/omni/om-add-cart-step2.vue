@@ -19,12 +19,11 @@
 </template>
 
 <script>
-import { SfImage, SfRadio } from '@storefront-ui/vue';
+import { SfRadio } from '@storefront-ui/vue';
 
 export default {
   name: 'OmAddCartStep2',
   components: {
-    SfImage,
     SfRadio
   },
   data () {

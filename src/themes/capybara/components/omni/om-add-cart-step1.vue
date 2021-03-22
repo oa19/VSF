@@ -33,22 +33,18 @@
 
 <script>
 import {
-  SfImage,
   SfCallToAction,
   SfIcon,
-  SfCircleIcon,
-  SfButton
+  SfCircleIcon
 } from '@storefront-ui/vue';
 import { mapActions } from 'vuex';
 
 export default {
   name: 'OmAddCartStep1',
   components: {
-    SfImage,
     SfCallToAction,
     SfIcon,
-    SfCircleIcon,
-    SfButton
+    SfCircleIcon
   },
   data () {
     return {

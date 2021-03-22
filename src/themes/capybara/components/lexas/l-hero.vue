@@ -1,7 +1,9 @@
 <template>
   <div class="l-hero">
     <div v-if="item">
-      <div class="title">{{ item.title }}</div>
+      <div class="title">
+        {{ item.title }}
+      </div>
     </div>
   </div>
 </template>
