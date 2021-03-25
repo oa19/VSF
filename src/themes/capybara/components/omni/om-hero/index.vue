@@ -30,13 +30,6 @@
           <div class="search-button-content">
             SELECT &<br>
             SAVE MODEL
-            <!-- <SfIcon
-              icon="search"
-              size="xs"
-              color="white"
-              view-box="0 0 24 24"
-              :coverage="1"
-            /> -->
           </div>
         </SfButton>
       </div>
@@ -53,12 +46,14 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import { SfCallToAction, SfButton } from '@storefront-ui/vue';
 import { checkWebpSupport } from 'theme/helpers';
 import LHero from 'theme/components/lexas/l-hero';
 import FilterSelect from './filter-select';
 import vehicleData from 'theme/resource/vehicles.json';
+import { prepareRelatedQuery } from '@vue-storefront/core/modules/catalog/queries/related';
+import { prepareCategoryProduct } from 'theme/helpers';
 
 export const dropdownKeys = [
   'Brand',
@@ -83,6 +78,9 @@ export default {
     ...mapState({
       isWebpSupported: (state) => state.ui.isWebpSupported
     }),
+    ...mapGetters({
+      attributeIdByLabel: 'homepage/attributeIdByLabel'
+    }),
     newsletterImage () {
       return checkWebpSupport(
         [
@@ -104,22 +102,37 @@ export default {
     return {
       initialSelectorData: [],
       selectorData: [],
-      selectedItems: {}
+      selectedItems: {},
+      resultProducts: []
     };
   },
   methods: {
     ...mapActions('ui', {
       openModal: 'openModal'
     }),
-    onSearch () {
+    async onSearch () {
       const filteredVehicles = this.vehicles.filter((data) => {
         return Object.values(this.selectedItems).every(
           (item) => Object.values(data).indexOf(item) >= 0
         );
       });
-      const national_code = (filteredVehicles.length) ? filteredVehicles[0]['National_code'] : ''
-      console.log(national_code, 'Hey')
-      // this.openModal({ name: ModalList.Newsletter });
+      const national_code = filteredVehicles.length
+        ? filteredVehicles[0]['National_code']
+        : '';
+      const attributeId = this.attributeIdByLabel('national_code', national_code)
+      if (!attributeId) this.$router.push('page-not-found')
+      else {
+        let relatedProductsQuery = prepareRelatedQuery('national_code', attributeId);
+        const { items } = await this.$store.dispatch('product/findProducts', {
+          query: relatedProductsQuery,
+          options: {
+            populateRequestCacheTags: false,
+            prefetchGroupProducts: false
+          }
+        });
+        this.resultProducts = items.map(item => prepareCategoryProduct(item))
+        this.$router.push(this.localizedRoute(this.resultProducts[0].link))
+      }
     },
     toggleDropdown (kindIndex) {
       this.selectorData = this.selectorData.map((d, index) => {

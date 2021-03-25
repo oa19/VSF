@@ -5,7 +5,7 @@
       @click.stop="selectButtonHandler()"
     >
       <div class="button-wrapper">
-        <span class="button-text">{{ dropdownData.text }}</span>
+        <span class="button-text">{{ title }}</span>
         <SfIcon
           v-if="dropdownData.showDropdown"
           icon="chevron_up"
@@ -64,6 +64,16 @@ export default {
       default: 1
     }
   },
+  computed: {
+    title () {
+      return this.dropdownTitle ? this.dropdownTitle : this.dropdownData.text
+    }
+  },
+  data () {
+    return {
+      dropdownTitle: ''
+    }
+  },
   methods: {
     selectButtonHandler () {
       this.$emit('toggle-dropdown', this.dropdownIndex);
@@ -72,6 +82,7 @@ export default {
       this.$emit('hide-dropdown');
     },
     onClickFilterItem (data) {
+      this.dropdownTitle = data
       this.$emit('dropdown-item-click', data, this.dropdownIndex);
       this.$emit('toggle-dropdown', this.dropdownIndex + 1);
     }
