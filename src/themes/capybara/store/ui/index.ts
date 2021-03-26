@@ -83,7 +83,6 @@ export const uiStore = {
       commit('setMicrocart', !state.microcart);
     },
     toggleSidebar ({ commit, state }, { type }) {
-      console.log('hey', type)
       if (type !== state.type) {
         commit('setSidebar', { open: true, type });
       } else {

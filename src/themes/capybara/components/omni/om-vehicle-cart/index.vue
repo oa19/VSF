@@ -9,89 +9,15 @@
         My Saved Vehicles
       </div>
       <OmVehicleCartCard
+        v-for="vehicle in vehicles"
+        :key="vehicle.National_code"
         :data="{
           active: true,
-          imgUrl:
-            'https://uc.uxpin.com/files/1182538/1139806/2020_BMW_3Series_MSport_Saloon_600x450_-54bcb8eec58507bb248e528a5d7b1c23.jpg',
-          title: 'BMW 330i M Sport 2020',
+          imgUrl: vehicle.Image,
+          title: `${vehicle.level1} ${vehicle.level5} ${vehicle.level6} ${vehicle.level7} ${vehicle.level3}`,
         }"
       />
-      <OmVehicleCartCard
-        :data="{
-          active: false,
-          imgUrl:
-            'https://uc.uxpin.com/files/1182538/1139806/2020_Volkswagen_Polo_Match_400x267_-1d755c64121fae9c73d1b288e9404643.jpg',
-          title: 'Volkswagen Polo 1.0 TDI 2018',
-        }"
-      />
-      <!-- <SfProperty
-        class="sf-property--large"
-        :name="$t('Total items')"
-        :value="productsCount"
-      /> -->
     </template>
-    <!-- <transition name="fade" mode="out-in">
-      <div key="my-cart" class="my-cart">
-        <div class="collected-product-list">
-          <transition-group name="fade" tag="div">
-            Hello
-            <SfCollectedProduct
-              v-for="product in productsInCart"
-              :key="product.id"
-              :image="getThumbnailForProductExtend(product)"
-              :title="product.name"
-              :regular-price="getProductPrice(product).regular"
-              :special-price="getProductPrice(product).special"
-              :stock="10"
-              :qty="product.qty"
-              class="collected-product"
-              @click:remove="removeHandler(product)"
-              @input="changeQuantity(product, $event)"
-            >
-              <template #configuration>
-                <div class="collected-product__properties">
-                  <SfProperty :name="$t('SKU')" :value="product.sku" />
-                  <SfProperty
-                    v-for="property in getProductOptions(product)"
-                    :key="property.label"
-                    :name="property.label"
-                  >
-                    <template #value>
-                      <span
-                        class="sf-property__value"
-                        v-html="property.value"
-                      />
-                    </template>
-                  </SfProperty>
-                </div>
-              </template>
-              <template #more-actions>
-                <span />
-              </template>
-            </SfCollectedProduct>
-          </transition-group>
-        </div>
-      </div>
-      <div v-else key="empty-cart" class="empty-cart">
-        <div class="empty-cart__banner">
-          <SfImage
-            :src="require('@storefront-ui/shared/icons/empty_cart.svg')"
-            :alt="$t('Your bag is empty')"
-            class="empty-cart__image"
-          />
-          <SfHeading
-            :title="$t('Your bag is empty')"
-            :subtitle="
-              $t(
-                'Looks like you haven’t added any items to the bag yet. Start shopping to fill it in.'
-              )
-            "
-            :level="2"
-            class="empty-cart__heading"
-          />
-        </div>
-      </div>
-    </transition> -->
     <template #content-bottom>
       <transition name="fade">
         <div v-if="totalItems">
@@ -177,8 +103,16 @@ export default {
   mixins: [VueOfflineMixin, onEscapePress],
   data () {
     return {
-      isVehicleCartVisible: false
+      isVehicleCartVisible: false,
+      vehicles: []
     };
+  },
+  watch: {
+    isVehicleCartOpen: function (val) {
+      if (val === true) {
+        this.vehicles = JSON.parse(localStorage.getItem('vehicles'))
+      }
+    }
   },
   computed: {
     ...mapGetters({
@@ -240,6 +174,7 @@ export default {
   },
   mounted () {
     this.isVehicleCartVisible = true;
+    this.vehicles = JSON.parse(localStorage.getItem('vehicles'))
   }
 };
 </script>
