@@ -10,6 +10,7 @@ export const vehiclesStore = {
   mutations: {
     SET_VEHICLE (state, national_code) {
       state.savedVehicles = [...new Set([...state.savedVehicles, national_code])]
+      localStorage.setItem('vehicles', JSON.stringify(state.savedVehicles))
     },
     CLEAR_VEHICLES (state) {
       state.savedVehicles = []

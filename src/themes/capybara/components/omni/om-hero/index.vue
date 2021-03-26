@@ -124,7 +124,6 @@ export default {
           (item) => Object.values(data).indexOf(item) >= 0
         );
       });
-      console.log(filteredVehicles, 'filteredVehicles')
       if (!filteredVehicles) this.$router.push('page-not-found');
       const attributeId = this.getAttributeIdByLabel(
         'national_code',

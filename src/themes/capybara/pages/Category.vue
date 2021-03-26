@@ -1,8 +1,11 @@
 <template>
   <div id="category">
     <SfBreadcrumbs class="breadcrumbs desktop-only" :breadcrumbs="breadcrumbs">
-      <template #link="{breadcrumb}">
-        <router-link :to="breadcrumb.route.link" class="sf-breadcrumbs__breadcrumb">
+      <template #link="{ breadcrumb }">
+        <router-link
+          :to="breadcrumb.route.link"
+          class="sf-breadcrumbs__breadcrumb"
+        >
           {{ breadcrumb.text }}
         </router-link>
       </template>
@@ -17,14 +20,22 @@
             class="sf-button--text navbar__filters-button"
             @click="isFilterSidebarOpen = true"
           >
-            <SfIcon size="18px" class="navbar__filters-icon" color="#BEBFC4" icon="filter" />
+            <SfIcon
+              size="18px"
+              class="navbar__filters-icon"
+              color="#BEBFC4"
+              icon="filter"
+            />
             {{ $t("Filters") }}
           </SfButton>
           <template v-if="activeFiltersCount">
             ({{ activeFiltersCount }})
             <span> &nbsp;&mdash;&nbsp;</span>
-            <button @click="clearAllFilters" class="sf-button sf-button--text navbar__filters-clear-all">
-              {{ $t('Clear all') }}
+            <button
+              @click="clearAllFilters"
+              class="sf-button sf-button--text navbar__filters-clear-all"
+            >
+              {{ $t("Clear all") }}
             </button>
           </template>
         </div>
@@ -49,7 +60,7 @@
             class="sf-button--text navbar__filters-button sort-by__button mobile-only"
             @click="$refs.SortBy.toggle()"
           >
-            {{ $t('Sort By') }}
+            {{ $t("Sort By") }}
             <ASortIcon />
           </SfButton>
         </div>
@@ -73,8 +84,15 @@
             :header="category.name"
           >
             <SfList class="list">
-              <SfListItem v-for="item in category.items" :key="item.id" class="list__item">
-                <router-link :to="item.link" :class="{'sf-menu-item--active': isCategoryActive(item)}">
+              <SfListItem
+                v-for="item in category.items"
+                :key="item.id"
+                class="list__item"
+              >
+                <router-link
+                  :to="item.link"
+                  :class="{ 'sf-menu-item--active': isCategoryActive(item) }"
+                >
                   <SfMenuItem :label="item.name" :count="item.count" />
                 </router-link>
               </SfListItem>
@@ -134,7 +152,12 @@
     >
       <div class="filters">
         <template v-for="(filters, filterType) in availableFilters">
-          <SfHeading :level="4" :title="$t(filterType)" :key="filterType" class="filters__title sf-heading--left" />
+          <SfHeading
+            :level="4"
+            :title="$t(filterType)"
+            :key="filterType"
+            class="filters__title sf-heading--left"
+          />
           <template v-if="filterType === 'color_filter'">
             <div class="filters__colors" :key="filterType + 'filter'">
               <SfColor
@@ -197,7 +220,11 @@ import { htmlDecode } from '@vue-storefront/core/filters';
 import { quickSearchByQuery } from '@vue-storefront/core/lib/search';
 import { getSearchOptionsFromRouteParams } from '@vue-storefront/core/modules/catalog-next/helpers/categoryHelpers';
 import { catalogHooksExecutors } from '@vue-storefront/core/modules/catalog-next/hooks';
-import { getTopLevelCategories, prepareCategoryMenuItem, prepareCategoryProduct } from 'theme/helpers';
+import {
+  getTopLevelCategories,
+  prepareCategoryMenuItem,
+  prepareCategoryProduct
+} from 'theme/helpers';
 import { formatProductLink } from '@vue-storefront/core/modules/url/helpers';
 import { getProductPrice } from 'theme/helpers';
 import {
@@ -300,7 +327,6 @@ export default {
       getBreadcrumbsRoutes: 'breadcrumbs/getBreadcrumbsRoutes',
       getBreadcrumbsCurrent: 'breadcrumbs/getBreadcrumbsCurrent',
       getAttributeLabelById: 'vehicles/getAttributeLabelById',
-      savedNationalCodes: 'vehicles/getSavedNationalCodes',
       getAttributeIdByLabel: 'vehicles/getAttributeIdByLabel'
     }),
     isLazyHydrateEnabled () {
@@ -314,7 +340,7 @@ export default {
     },
     breadcrumbs () {
       return this.getBreadcrumbsRoutes
-        .map(route => ({
+        .map((route) => ({
           text: htmlDecode(route.name),
           route: {
             link: route.route_link
@@ -326,7 +352,7 @@ export default {
     },
     categories () {
       return getTopLevelCategories(this.getCategories)
-        .map(category => {
+        .map((category) => {
           const viewAllMenuItem = {
             ...category,
             name: i18n.t('View all'),
@@ -335,9 +361,13 @@ export default {
 
           const subCategories = category.children_data
             ? category.children_data
-              .map(subCategory => prepareCategoryMenuItem(
-                this.getCategories.find(category => category.id === subCategory.id)
-              ))
+              .map((subCategory) =>
+                prepareCategoryMenuItem(
+                  this.getCategories.find(
+                    (category) => category.id === subCategory.id
+                  )
+                )
+              )
               .filter(Boolean)
             : [];
 
@@ -373,14 +403,19 @@ export default {
       );
     },
     sortOptions () {
-      return Object.entries(config.products.sortByAttributes).map(attribute => {
-        const [label, id] = attribute;
-        return { id, label };
-      });
+      return Object.entries(config.products.sortByAttributes).map(
+        (attribute) => {
+          const [label, id] = attribute;
+          return { id, label };
+        }
+      );
     },
     sortLabel () {
-      const selectedSortOrder = this.sortOptions.find(sortOption => sortOption.id === this.sortOrder) || {}
-      return selectedSortOrder.label || ''
+      const selectedSortOrder =
+        this.sortOptions.find(
+          (sortOption) => sortOption.id === this.sortOrder
+        ) || {};
+      return selectedSortOrder.label || '';
     },
     availableFilters () {
       const result = Object.entries(this.getAvailableFilters || {})
@@ -390,9 +425,12 @@ export default {
           );
         })
         .reduce((result, [filterType, filters]) => {
-          result[`${filterType}_filter`] = filters.map(filter => ({
+          result[`${filterType}_filter`] = filters.map((filter) => ({
             ...filter,
-            label: filter.type === 'national_code' ? this.getAttributeLabelById('national_code', filter.id) : filter.label,
+            label:
+              filter.type === 'national_code'
+                ? this.getAttributeLabelById('national_code', filter.id)
+                : filter.label,
             count: this.getFilterCount(filter) || '',
             color:
               filterType === 'color'
@@ -404,19 +442,19 @@ export default {
           return result;
         }, {});
 
-      return result
+      return result;
     },
     activeFiltersCount () {
-      let counter = 0
-      Object.keys(this.getCurrentFilters).forEach(key => {
-        counter += this.getCurrentFilters[key].length
-      })
-      return counter
+      let counter = 0;
+      Object.keys(this.getCurrentFilters).forEach((key) => {
+        counter += this.getCurrentFilters[key].length;
+      });
+      return counter;
     },
     isFilterActive () {
-      return filter =>
+      return (filter) =>
         castArray(this.getCurrentFilters[filter.type]).find(
-          variant => variant && variant.id === filter.id
+          (variant) => variant && variant.id === filter.id
         ) !== undefined;
     }
   },
@@ -429,6 +467,25 @@ export default {
     $route: {
       immediate: true,
       handler (to, from) {
+        // console.log(to.path.includes('national_code'), 'hey')
+        if (to.fullPath.includes('national_code') === false) {
+          const savedVehicles = JSON.parse(localStorage.getItem('vehicles'));
+          const savedNationalCodes = savedVehicles.map(
+            (vehicle) => vehicle.National_code
+          );
+
+          savedNationalCodes.forEach((nationalCode) => {
+            const filter = {
+              color: undefined,
+              count: '',
+              id: this.getAttributeIdByLabel('national_code', nationalCode),
+              label: nationalCode,
+              type: 'national_code'
+            };
+
+            this.$store.dispatch('category-next/switchSearchFilters', [filter]);
+          });
+        }
         if (to.query.page) {
           this.changePage(parseInt(to.query.page) || 1);
         }
@@ -437,7 +494,7 @@ export default {
   },
   async asyncData ({ store, route, context }) {
     // this is for SSR purposes to prefetch data - and it's always executed before parent component methods
-    if (context) context.output.cacheTags.add('category')
+    if (context) context.output.cacheTags.add('category');
     await composeInitialPageState(store, route);
   },
   async beforeRouteEnter (to, from, next) {
@@ -445,7 +502,7 @@ export default {
     // SSR no need to invoke SW caching here
     else if (!from.name) {
       // SSR but client side invocation, we need to cache products and invoke requests from asyncData for offline support
-      next(async vm => {
+      next(async (vm) => {
         vm.loading = true;
         await composeInitialPageState(vm.$store, to, true);
         await vm.$store.dispatch('category-next/cacheProducts', { route: to }); // await here is because we must wait for the hydration
@@ -453,7 +510,7 @@ export default {
       });
     } else {
       // Pure CSR, with no initial category state
-      next(async vm => {
+      next(async (vm) => {
         vm.loading = true;
         vm.$store.dispatch('category-next/cacheProducts', { route: to });
         vm.loading = false;
@@ -461,7 +518,7 @@ export default {
     }
   },
   mounted () {
-    this.unsubscribeFromStoreAction = this.$store.subscribeAction(action => {
+    this.unsubscribeFromStoreAction = this.$store.subscribeAction((action) => {
       if (action.type === 'category-next/loadAvailableFiltersFrom') {
         this.aggregations = action.payload.aggregations;
       }
@@ -469,18 +526,6 @@ export default {
     this.$bus.$on('product-after-list', this.initPagination);
     window.addEventListener('resize', this.getBrowserWidth);
     this.getBrowserWidth();
-
-    this.savedNationalCodes.forEach(nationalCode => {
-      const filter = {
-        color: undefined,
-        count: '',
-        id: this.getAttributeIdByLabel('national_code', nationalCode),
-        label: nationalCode,
-        type: 'national_code'
-      }
-
-      this.$store.dispatch('category-next/switchSearchFilters', [filter]);
-    })
   },
   beforeDestroy () {
     this.unsubscribeFromStoreAction();
@@ -560,17 +605,16 @@ export default {
         `agg_terms_${filter.type}_options`
       ];
 
-      return aggregations
-        .reduce((result, aggregation) => {
-          const bucket =
-            this.aggregations &&
-            this.aggregations[aggregation] &&
-            this.aggregations[aggregation].buckets.find(
-              bucket => String(bucket.key) === String(filter.id)
-            );
+      return aggregations.reduce((result, aggregation) => {
+        const bucket =
+          this.aggregations &&
+          this.aggregations[aggregation] &&
+          this.aggregations[aggregation].buckets.find(
+            (bucket) => String(bucket.key) === String(filter.id)
+          );
 
-          return bucket ? result + bucket.doc_count : result;
-        }, 0);
+        return bucket ? result + bucket.doc_count : result;
+      }, 0);
     },
     isCategoryActive (category) {
       if (!this.getCurrentCategory.path) {
@@ -629,7 +673,8 @@ export default {
   }
 }
 .breadcrumbs {
-  padding: var(--spacer-base) var(--spacer-base) var(--spacer-base) var(--spacer-sm);
+  padding: var(--spacer-base) var(--spacer-base) var(--spacer-base)
+    var(--spacer-sm);
 }
 .navbar {
   position: relative;
@@ -657,10 +702,10 @@ export default {
     align-items: center;
     display: grid;
     flex: 1;
-    grid-template-columns: 1fr minmax( auto, max-content) 1fr;
-    grid-template-areas:'filter counter sort';
+    grid-template-columns: 1fr minmax(auto, max-content) 1fr;
+    grid-template-areas: "filter counter sort";
     @include for-desktop {
-      grid-template-areas:'filter sort counter';
+      grid-template-areas: "filter sort counter";
       grid-column-gap: var(--spacer-2xl);
       grid-template-columns: max-content max-content auto;
       padding: var(--spacer-xs) var(--spacer-xl);
