@@ -54,6 +54,8 @@ import FilterSelect from './filter-select';
 import vehicleData from 'theme/resource/vehicles.json';
 import { prepareRelatedQuery } from '@vue-storefront/core/modules/catalog/queries/related';
 import { prepareCategoryProduct } from 'theme/helpers';
+import { getTopLevelCategories } from 'theme/helpers';
+import { formatCategoryLink } from '@vue-storefront/core/modules/url/helpers';
 
 export const dropdownKeys = [
   'Brand',
@@ -78,9 +80,13 @@ export default {
     ...mapState({
       isWebpSupported: (state) => state.ui.isWebpSupported
     }),
-    ...mapGetters({
-      attributeIdByLabel: 'homepage/attributeIdByLabel'
-    }),
+    ...mapGetters(
+      {
+        getAttributeIdByLabel: 'vehicles/getAttributeIdByLabel'
+      },
+      'category',
+      ['getCategories', 'getCurrentCategory']
+    ),
     newsletterImage () {
       return checkWebpSupport(
         [
@@ -96,6 +102,9 @@ export default {
     },
     vehicles () {
       return vehicleData[VEHICLE_DATA_KEY];
+    },
+    categories () {
+      return getTopLevelCategories(this.getCategories);
     }
   },
   data () {
@@ -119,10 +128,16 @@ export default {
       const national_code = filteredVehicles.length
         ? filteredVehicles[0]['National_code']
         : '';
-      const attributeId = this.attributeIdByLabel('national_code', national_code)
-      if (!attributeId) this.$router.push('page-not-found')
+      const attributeId = this.getAttributeIdByLabel(
+        'national_code',
+        national_code
+      );
+      if (!attributeId) this.$router.push('page-not-found');
       else {
-        let relatedProductsQuery = prepareRelatedQuery('national_code', attributeId);
+        let relatedProductsQuery = prepareRelatedQuery(
+          'national_code',
+          attributeId
+        );
         const { items } = await this.$store.dispatch('product/findProducts', {
           query: relatedProductsQuery,
           options: {
@@ -130,8 +145,10 @@ export default {
             prefetchGroupProducts: false
           }
         });
-        this.resultProducts = items.map(item => prepareCategoryProduct(item))
-        this.$router.push(this.localizedRoute(this.resultProducts[0].link))
+        this.resultProducts = items.map((item) => prepareCategoryProduct(item));
+        // console.log(this.resultProducts[0], 'jhey')
+        // this.$route.push(formatCategoryLink(this.categories[0]));
+        // this.$router.push(this.localizedRoute(this.resultProducts[0].link))
       }
     },
     toggleDropdown (kindIndex) {

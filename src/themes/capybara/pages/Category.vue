@@ -298,7 +298,8 @@ export default {
       getSystemFilterNames: 'category-next/getSystemFilterNames',
       getCategories: 'category/getCategories',
       getBreadcrumbsRoutes: 'breadcrumbs/getBreadcrumbsRoutes',
-      getBreadcrumbsCurrent: 'breadcrumbs/getBreadcrumbsCurrent'
+      getBreadcrumbsCurrent: 'breadcrumbs/getBreadcrumbsCurrent',
+      getAttributeLabelById: 'vehicles/getAttributeLabelById'
     }),
     isLazyHydrateEnabled () {
       return config.ssr.lazyHydrateFor.includes('category-next.products');
@@ -380,7 +381,7 @@ export default {
       return selectedSortOrder.label || ''
     },
     availableFilters () {
-      return Object.entries(this.getAvailableFilters || {})
+      const result = Object.entries(this.getAvailableFilters || {})
         .filter(([filterType, filters]) => {
           return (
             filters.length && !this.getSystemFilterNames.includes(filterType)
@@ -389,6 +390,7 @@ export default {
         .reduce((result, [filterType, filters]) => {
           result[`${filterType}_filter`] = filters.map(filter => ({
             ...filter,
+            label: filter.type === 'national_code' ? this.getAttributeLabelById('national_code', filter.id) : filter.label,
             count: this.getFilterCount(filter) || '',
             color:
               filterType === 'color'
@@ -399,6 +401,8 @@ export default {
           }));
           return result;
         }, {});
+
+      return result
     },
     activeFiltersCount () {
       let counter = 0

@@ -8,6 +8,7 @@ import { once } from '@vue-storefront/core/helpers';
 import { module as cartModule } from './store/cart';
 
 import { claimsStore } from 'theme/store/claims';
+import { vehiclesStore } from 'theme/store/vehicles';
 import { homepageStore } from 'theme/store/homepage';
 import { uiStore } from 'theme/store/ui';
 import { promotedStore } from 'theme/store/promoted-offers';
@@ -69,6 +70,7 @@ function initTheme (app, router, store, config) {
   store.registerModule('promoted', promotedStore);
   store.registerModule('instagram', instagramStore);
   store.registerModule('defaultContent', defaultContentStore);
+  store.registerModule('vehicles', vehiclesStore);
 }
 
 export { themeEntry, initTheme };
