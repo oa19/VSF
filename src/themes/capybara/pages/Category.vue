@@ -299,7 +299,9 @@ export default {
       getCategories: 'category/getCategories',
       getBreadcrumbsRoutes: 'breadcrumbs/getBreadcrumbsRoutes',
       getBreadcrumbsCurrent: 'breadcrumbs/getBreadcrumbsCurrent',
-      getAttributeLabelById: 'vehicles/getAttributeLabelById'
+      getAttributeLabelById: 'vehicles/getAttributeLabelById',
+      savedNationalCodes: 'vehicles/getSavedNationalCodes',
+      getAttributeIdByLabel: 'vehicles/getAttributeIdByLabel'
     }),
     isLazyHydrateEnabled () {
       return config.ssr.lazyHydrateFor.includes('category-next.products');
@@ -467,6 +469,18 @@ export default {
     this.$bus.$on('product-after-list', this.initPagination);
     window.addEventListener('resize', this.getBrowserWidth);
     this.getBrowserWidth();
+
+    this.savedNationalCodes.forEach(nationalCode => {
+      const filter = {
+        color: undefined,
+        count: '',
+        id: this.getAttributeIdByLabel('national_code', nationalCode),
+        label: nationalCode,
+        type: 'national_code'
+      }
+
+      this.$store.dispatch('category-next/switchSearchFilters', [filter]);
+    })
   },
   beforeDestroy () {
     this.unsubscribeFromStoreAction();

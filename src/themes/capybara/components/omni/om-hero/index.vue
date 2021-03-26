@@ -119,17 +119,16 @@ export default {
       openModal: 'openModal'
     }),
     async onSearch () {
-      const filteredVehicles = this.vehicles.filter((data) => {
+      const filteredVehicles = this.vehicles.find((data) => {
         return Object.values(this.selectedItems).every(
           (item) => Object.values(data).indexOf(item) >= 0
         );
       });
-      const national_code = filteredVehicles.length
-        ? filteredVehicles[0]['National_code']
-        : '';
+      console.log(filteredVehicles, 'filteredVehicles')
+      if (!filteredVehicles) this.$router.push('page-not-found');
       const attributeId = this.getAttributeIdByLabel(
         'national_code',
-        national_code
+        filteredVehicles.National_code
       );
       if (!attributeId) this.$router.push('page-not-found');
       else {
@@ -145,6 +144,7 @@ export default {
         //   }
         // });
         // this.resultProducts = items.map((item) => prepareCategoryProduct(item));
+        this.$store.commit('vehicles/SET_VEHICLE', filteredVehicles)
         this.$router.push(formatCategoryLink(this.categories[0]))
       }
     },

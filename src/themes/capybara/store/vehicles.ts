@@ -3,12 +3,17 @@
 export const vehiclesStore = {
   namespaced: true,
   state: {
-    new_collection: [],
-    bestsellers: []
+    savedVehicles: []
   },
   actions: {
   },
   mutations: {
+    SET_VEHICLE (state, national_code) {
+      state.savedVehicles = [...new Set([...state.savedVehicles, national_code])]
+    },
+    CLEAR_VEHICLES (state) {
+      state.savedVehicles = []
+    }
   },
   getters: {
     getAttributeIdByLabel: (state, getters, rootState, rootGetters) => (attributeCode, attributeLabel) => {
@@ -31,6 +36,12 @@ export const vehiclesStore = {
         option => option.value === attributeId.toString()
       )?.label;
       return attributeLabel || null
+    },
+    getAllSavedVehicles (state) {
+      return state.savedVehicles
+    },
+    getSavedNationalCodes (state) {
+      return state.savedVehicles.map(vehicle => vehicle.National_code)
     }
   }
 }
