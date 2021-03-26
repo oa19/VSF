@@ -83,10 +83,9 @@ export default {
     ...mapGetters(
       {
         getAttributeIdByLabel: 'vehicles/getAttributeIdByLabel'
-      },
-      'category',
-      ['getCategories', 'getCurrentCategory']
+      }
     ),
+    ...mapGetters('category', ['getCategories', 'getCurrentCategory']),
     newsletterImage () {
       return checkWebpSupport(
         [
@@ -134,21 +133,19 @@ export default {
       );
       if (!attributeId) this.$router.push('page-not-found');
       else {
-        let relatedProductsQuery = prepareRelatedQuery(
-          'national_code',
-          attributeId
-        );
-        const { items } = await this.$store.dispatch('product/findProducts', {
-          query: relatedProductsQuery,
-          options: {
-            populateRequestCacheTags: false,
-            prefetchGroupProducts: false
-          }
-        });
-        this.resultProducts = items.map((item) => prepareCategoryProduct(item));
-        // console.log(this.resultProducts[0], 'jhey')
-        // this.$route.push(formatCategoryLink(this.categories[0]));
-        // this.$router.push(this.localizedRoute(this.resultProducts[0].link))
+        // let relatedProductsQuery = prepareRelatedQuery(
+        //   'national_code',
+        //   attributeId
+        // );
+        // const { items } = await this.$store.dispatch('product/findProducts', {
+        //   query: relatedProductsQuery,
+        //   options: {
+        //     populateRequestCacheTags: false,
+        //     prefetchGroupProducts: false
+        //   }
+        // });
+        // this.resultProducts = items.map((item) => prepareCategoryProduct(item));
+        this.$router.push(formatCategoryLink(this.categories[0]))
       }
     },
     toggleDropdown (kindIndex) {
