@@ -1,6 +1,6 @@
 // import { prepareQuery } from '@vue-storefront/core/modules/catalog/queries/common'
 // const vehicleData = require('theme/resource/vehicles.json')
-import vehicleData from 'theme/resource/vehicles.json';
+import vehicleData from '../resource/vehicles.json';
 
 export const vehiclesStore = {
   namespaced: true,
@@ -60,6 +60,9 @@ export const vehiclesStore = {
           );
         })
         : [];
+    },
+    getActiveVehicleData: (state, getters, rootState, rootGetters) => (national_code) => {
+      return vehicleData['vehicles'].find(vehicle => vehicle.National_code === national_code)
     }
   }
 };

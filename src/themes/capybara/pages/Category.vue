@@ -337,7 +337,8 @@ export default {
       getBreadcrumbsRoutes: 'breadcrumbs/getBreadcrumbsRoutes',
       getBreadcrumbsCurrent: 'breadcrumbs/getBreadcrumbsCurrent',
       getAttributeLabelById: 'vehicles/getAttributeLabelById',
-      getAttributeIdByLabel: 'vehicles/getAttributeIdByLabel'
+      getAttributeIdByLabel: 'vehicles/getAttributeIdByLabel',
+      getActiveVehicleData: 'vehicles/getActiveVehicleData'
     }),
     isLazyHydrateEnabled () {
       return config.ssr.lazyHydrateFor.includes('category-next.products');
@@ -479,22 +480,23 @@ export default {
       handler (to) {
         // console.log(to.path.includes('national_code'), 'hey')
         if (to.fullPath.includes('national_code') === false) {
-          const savedVehicles = JSON.parse(localStorage.getItem('vehicles'));
-          this.activeVehicle = JSON.parse(
+          // const savedVehicles = JSON.parse(localStorage.getItem('vehicles'));
+          const activeNationalCode = JSON.parse(
             localStorage.getItem('active-vehicle')
           );
+          this.activeVehicle = this.getActiveVehicleData(this.activeVehicle);
 
-          savedVehicles.forEach((nationalCode) => {
-            const filter = {
-              color: undefined,
-              count: '',
-              id: this.getAttributeIdByLabel('national_code', nationalCode),
-              label: nationalCode,
-              type: 'national_code'
-            };
+          console.log(this.activeVehicle, 'hello');
 
-            this.$store.dispatch('category-next/switchSearchFilters', [filter]);
-          });
+          const filter = {
+            color: undefined,
+            count: '',
+            id: this.getAttributeIdByLabel('national_code', activeNationalCode),
+            label: activeNationalCode,
+            type: 'national_code'
+          };
+
+          this.$store.dispatch('category-next/switchSearchFilters', [filter]);
         }
         if (to.query.page) {
           this.changePage(parseInt(to.query.page) || 1);
