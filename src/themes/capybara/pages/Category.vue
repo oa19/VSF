@@ -12,7 +12,14 @@
     </SfBreadcrumbs>
     <div class="navbar section">
       <div class="navbar__aside desktop-only">
-        <SfHeading :level="3" :title="$t('Categories')" class="navbar__title" />
+        <!-- <SfHeading :level="3" :title="$t('Categories')" class="navbar__title" /> -->
+        <OmVehicleCartCard
+          :data="{
+            active: false,
+            imgUrl: this.activeVehicle.Image,
+            title: `${vehicle.level1} ${vehicle.level5} ${vehicle.level6} ${vehicle.level7} ${vehicle.level3}`,
+          }"
+        />
       </div>
       <div class="navbar__main">
         <div class="navbar__filter">
@@ -247,6 +254,7 @@ import {
   SfBreadcrumbs,
   SfProductCard
 } from '@storefront-ui/vue';
+import OmVehicleCartCard from 'theme/components/omni/om-vehicle-cart/om-vehicle-cart-card';
 
 const THEME_PAGE_SIZE = 12;
 const LAZY_LOADING_ACTIVATION_BREAKPOINT = 1024;
@@ -299,7 +307,8 @@ export default {
     SfAccordion,
     SfPagination,
     SfBreadcrumbs,
-    SfProductCard
+    SfProductCard,
+    OmVehicleCartCard
   },
   mixins: [onBottomScroll],
   data () {
@@ -311,7 +320,8 @@ export default {
       browserWidth: 0,
       isFilterSidebarOpen: false,
       unsubscribeFromStoreAction: null,
-      aggregations: null
+      aggregations: null,
+      activeVehicle: {}
     };
   },
   computed: {
@@ -466,15 +476,15 @@ export default {
     },
     $route: {
       immediate: true,
-      handler (to, from) {
+      handler (to) {
         // console.log(to.path.includes('national_code'), 'hey')
         if (to.fullPath.includes('national_code') === false) {
           const savedVehicles = JSON.parse(localStorage.getItem('vehicles'));
-          const savedNationalCodes = savedVehicles.map(
-            (vehicle) => vehicle.National_code
+          this.activeVehicle = JSON.parse(
+            localStorage.getItem('active-vehicle')
           );
 
-          savedNationalCodes.forEach((nationalCode) => {
+          savedVehicles.forEach((nationalCode) => {
             const filter = {
               color: undefined,
               count: '',
@@ -659,6 +669,7 @@ export default {
 
 #category {
   box-sizing: border-box;
+  background: var(--c-light-variant);
   @include for-desktop {
     max-width: 1272px;
     margin: 0 auto;

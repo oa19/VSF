@@ -155,6 +155,7 @@ export default {
 @import "~@storefront-ui/shared/styles/helpers/breakpoints";
 
 .o-footer {
+  background: var(--c-light-variant);
   @include for-desktop {
     max-width: 1272px;
     margin: auto;

@@ -2,7 +2,7 @@
   <div class="o-search">
     <SfSearchBar
       v-model="search"
-      :placeholder="$t('Type what you are looking for...')"
+      :placeholder="$t('Search by Part Number or Keyword')"
       class="sf-header__search"
       @input="startSearch"
       @click.native="$store.commit('ui/setSearchpanel', true)"
@@ -29,7 +29,9 @@ import ALoadingSpinner from 'theme/components/atoms/a-loading-spinner';
 import ALoadingError from 'theme/components/atoms/a-loading-error';
 
 const SearchPanel = () =>
-  import(/* webpackChunkName: "vsf-search-panel" */ 'theme/components/organisms/o-search-panel');
+  import(
+    /* webpackChunkName: "vsf-search-panel" */ 'theme/components/organisms/o-search-panel'
+  );
 
 export default {
   name: 'OSearch',
@@ -45,13 +47,13 @@ export default {
         error: ALoadingError,
         timeout: 3000
       })
-    }
+    };
   },
   mixins: [SearchPanelMixin],
   computed: {
     ...mapGetters('user', ['isLoggedIn']),
     ...mapState({
-      isSearchPanelVisible: state => state.ui.searchpanel
+      isSearchPanelVisible: (state) => state.ui.searchpanel
     })
   },
   methods: {
@@ -71,3 +73,19 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.o-search {
+  --search-bar-border-width: 0;
+  background-color: var(--c-light);
+  border-radius: 30px;
+  padding: 0 10px;
+}
+::v-deep .sf-search-bar__input[type="search"] {
+  &:focus {
+    outline: none;
+    border-width: 0 0 1px 0;
+    border-color: #b1b1b1;
+    transition: border-width 1s linear;
+  }
+}
+</style>

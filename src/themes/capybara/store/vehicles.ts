@@ -1,34 +1,47 @@
 // import { prepareQuery } from '@vue-storefront/core/modules/catalog/queries/common'
+// const vehicleData = require('theme/resource/vehicles.json')
+import vehicleData from 'theme/resource/vehicles.json';
 
 export const vehiclesStore = {
   namespaced: true,
   state: {
     savedVehicles: []
   },
-  actions: {
-  },
+  actions: {},
   mutations: {
-    SET_VEHICLE (state, national_code) {
-      state.savedVehicles = [...new Set([...state.savedVehicles, national_code])]
-      localStorage.setItem('vehicles', JSON.stringify(state.savedVehicles))
+    SET_VEHICLE (state, nationalCode) {
+      const previousVehicles = JSON.parse(localStorage.getItem('vehicles'));
+      state.savedVehicles = [...new Set([...previousVehicles, nationalCode])];
+      localStorage.setItem('vehicles', JSON.stringify(state.savedVehicles));
+      localStorage.setItem('active-vehicle', nationalCode);
     },
     CLEAR_VEHICLES (state) {
-      state.savedVehicles = []
+      state.savedVehicles = [];
+      localStorage.removeItem('vehicles');
+      localStorage.removeItem('active-vehicle');
     }
   },
   getters: {
-    getAttributeIdByLabel: (state, getters, rootState, rootGetters) => (attributeCode, attributeLabel) => {
-      const attribute = rootGetters['attribute/getAttributeListByCode'][attributeCode];
+    getAttributeIdByLabel: (state, getters, rootState, rootGetters) => (
+      attributeCode,
+      attributeLabel
+    ) => {
+      const attribute =
+        rootGetters['attribute/getAttributeListByCode'][attributeCode];
       if (!attribute) {
         return null;
       }
       const attributeId = attribute.options.find(
         option => option.label === attributeLabel.toString()
       )?.value;
-      return attributeId || null
+      return attributeId || null;
     },
-    getAttributeLabelById: (state, getters, rootState, rootGetters) => (attributeCode, attributeId) => {
-      const attribute = rootGetters['attribute/getAttributeListByCode'][attributeCode];
+    getAttributeLabelById: (state, getters, rootState, rootGetters) => (
+      attributeCode,
+      attributeId
+    ) => {
+      const attribute =
+        rootGetters['attribute/getAttributeListByCode'][attributeCode];
       if (!attribute) {
         return null;
       }
@@ -36,13 +49,17 @@ export const vehiclesStore = {
       const attributeLabel = attribute.options.find(
         option => option.value === attributeId.toString()
       )?.label;
-      return attributeLabel || null
+      return attributeLabel || null;
     },
-    getAllSavedVehicles (state) {
-      return state.savedVehicles
-    },
-    getSavedNationalCodes (state) {
-      return state.savedVehicles.map(vehicle => vehicle.National_code)
+    getSavedVehiclesData () {
+      const nationalCodes = JSON.parse(localStorage.getItem('vehicles'));
+      return nationalCodes
+        ? nationalCodes.map(code => {
+          return vehicleData['vehicles'].find(
+            vehicle => vehicle.National_code === code
+          );
+        })
+        : [];
     }
   }
-}
+};

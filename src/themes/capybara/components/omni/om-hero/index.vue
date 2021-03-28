@@ -124,28 +124,28 @@ export default {
           (item) => Object.values(data).indexOf(item) >= 0
         );
       });
-      if (!filteredVehicles) this.$router.push('page-not-found');
-      const attributeId = this.getAttributeIdByLabel(
-        'national_code',
-        filteredVehicles.National_code
-      );
-      if (!attributeId) this.$router.push('page-not-found');
-      else {
-        // let relatedProductsQuery = prepareRelatedQuery(
-        //   'national_code',
-        //   attributeId
-        // );
-        // const { items } = await this.$store.dispatch('product/findProducts', {
-        //   query: relatedProductsQuery,
-        //   options: {
-        //     populateRequestCacheTags: false,
-        //     prefetchGroupProducts: false
-        //   }
-        // });
-        // this.resultProducts = items.map((item) => prepareCategoryProduct(item));
-        this.$store.commit('vehicles/SET_VEHICLE', filteredVehicles)
-        this.$router.push(formatCategoryLink(this.categories[0]))
-      }
+      this.$store.commit('vehicles/SET_VEHICLE', filteredVehicles.National_code)
+      this.$router.push(formatCategoryLink(this.categories[0]))
+      // if (!filteredVehicles) this.$router.push('page-not-found');
+      // const attributeId = this.getAttributeIdByLabel(
+      //   'national_code',
+      //   filteredVehicles.National_code
+      // );
+      // if (!attributeId) this.$router.push('page-not-found');
+      // else {
+      // let relatedProductsQuery = prepareRelatedQuery(
+      //   'national_code',
+      //   attributeId
+      // );
+      // const { items } = await this.$store.dispatch('product/findProducts', {
+      //   query: relatedProductsQuery,
+      //   options: {
+      //     populateRequestCacheTags: false,
+      //     prefetchGroupProducts: false
+      //   }
+      // });
+      // this.resultProducts = items.map((item) => prepareCategoryProduct(item));
+      // }
     },
     toggleDropdown (kindIndex) {
       this.selectorData = this.selectorData.map((d, index) => {
