@@ -7,7 +7,7 @@ export const getSystemFilterNames: string[] = config.products.systemFilterNames
 /**
  * Creates new filtersQuery (based on currentQuery) by modifying specific filter variant.
  */
-export const changeFilterQuery = ({ currentQuery = {}, filterVariant }: {currentQuery?: any, filterVariant?: FilterVariant} = {}) => {
+export const changeFilterQuery = ({ currentQuery = {}, filterVariant }: { currentQuery?: any, filterVariant?: FilterVariant } = {}) => {
   const newQuery = JSON.parse(JSON.stringify(currentQuery))
   if (!filterVariant) return newQuery
   if (getSystemFilterNames.includes(filterVariant.type)) {

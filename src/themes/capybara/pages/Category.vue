@@ -14,37 +14,28 @@
       <div class="navbar__aside desktop-only">
         <!-- <SfHeading :level="3" :title="$t('Categories')" class="navbar__title" /> -->
         <OmVehicleCartCard
+          class="vehicle-cart-card"
           :data="{
             active: false,
-            imgUrl: this.activeVehicle.Image,
-            title: `${vehicle.level1} ${vehicle.level5} ${vehicle.level6} ${vehicle.level7} ${vehicle.level3}`,
+            imgUrl: activeVehicle.Image,
+            title: `${activeVehicle.level1} ${activeVehicle.level5} ${activeVehicle.level6} ${activeVehicle.level7} ${activeVehicle.level3}`,
           }"
         />
+        <SfButton
+          class="vehicle-change-button"
+        >
+          {{ $t("Change vehicle") }}
+        </SfButton>
       </div>
       <div class="navbar__main">
-        <div class="navbar__filter">
-          <SfButton
-            class="sf-button--text navbar__filters-button"
-            @click="isFilterSidebarOpen = true"
-          >
-            <SfIcon
-              size="18px"
-              class="navbar__filters-icon"
-              color="#BEBFC4"
-              icon="filter"
-            />
-            {{ $t("Filters") }}
-          </SfButton>
-          <template v-if="activeFiltersCount">
-            ({{ activeFiltersCount }})
-            <span> &nbsp;&mdash;&nbsp;</span>
-            <button
-              @click="clearAllFilters"
-              class="sf-button sf-button--text navbar__filters-clear-all"
-            >
-              {{ $t("Clear all") }}
-            </button>
-          </template>
+        <div class="navbar__counter">
+          <span class="navbar__label desktop-only">
+            {{ $t("Products found") }}:
+          </span>
+          <strong class="desktop-only">{{ getCategoryProductsTotal }}</strong>
+          <span class="navbar__label mobile-only">
+            {{ $t("{count} items", { count: getCategoryProductsTotal }) }}
+          </span>
         </div>
         <div class="navbar__sort">
           <span class="navbar__label desktop-only">{{ $t("Sort By") }}:</span>
@@ -71,41 +62,58 @@
             <ASortIcon />
           </SfButton>
         </div>
-        <div class="navbar__counter">
-          <span class="navbar__label desktop-only">
-            {{ $t("Products found") }}:
-          </span>
-          <strong class="desktop-only">{{ getCategoryProductsTotal }}</strong>
-          <span class="navbar__label mobile-only">
-            {{ $t("{count} items", { count: getCategoryProductsTotal }) }}
-          </span>
-        </div>
       </div>
     </div>
     <div class="main section">
       <div class="sidebar desktop-only">
-        <SfAccordion :show-chevron="false">
-          <SfAccordionItem
-            v-for="category in categories"
-            :key="category.id"
-            :header="category.name"
-          >
-            <SfList class="list">
-              <SfListItem
-                v-for="item in category.items"
-                :key="item.id"
-                class="list__item"
+        <div class="sidebar-wrapper">
+          <div class="navbar__filter">
+            <SfButton
+              class="sf-button--text navbar__filters-button"
+              @click="isFilterSidebarOpen = true"
+            >
+              <SfIcon
+                size="18px"
+                class="navbar__filters-icon"
+                color="#BEBFC4"
+                icon="filter"
+              />
+              {{ $t("Filters") }}
+            </SfButton>
+            <template v-if="activeFiltersCount">
+              ({{ activeFiltersCount }})
+              <span> &nbsp;&mdash;&nbsp;</span>
+              <button
+                @click="clearAllFilters"
+                class="sf-button sf-button--text navbar__filters-clear-all"
               >
-                <router-link
-                  :to="item.link"
-                  :class="{ 'sf-menu-item--active': isCategoryActive(item) }"
+                {{ $t("Clear all") }}
+              </button>
+            </template>
+          </div>
+          <SfAccordion>
+            <SfAccordionItem
+              v-for="category in categories"
+              :key="category.id"
+              :header="category.name"
+            >
+              <SfList class="list">
+                <SfListItem
+                  v-for="item in category.items"
+                  :key="item.id"
+                  class="list__item"
                 >
-                  <SfMenuItem :label="item.name" :count="item.count" />
-                </router-link>
-              </SfListItem>
-            </SfList>
-          </SfAccordionItem>
-        </SfAccordion>
+                  <router-link
+                    :to="item.link"
+                    :class="{ 'sf-menu-item--active': isCategoryActive(item) }"
+                  >
+                    <SfMenuItem :label="item.name" />
+                  </router-link>
+                </SfListItem>
+              </SfList>
+            </SfAccordionItem>
+          </SfAccordion>
+        </div>
       </div>
       <div class="products">
         <SfHeading
@@ -432,24 +440,31 @@ export default {
       const result = Object.entries(this.getAvailableFilters || {})
         .filter(([filterType, filters]) => {
           return (
-            filters.length && !this.getSystemFilterNames.includes(filterType)
+            filters.length &&
+            !this.getSystemFilterNames.includes(filterType) &&
+            filterType !== 'national_code'
           );
         })
         .reduce((result, [filterType, filters]) => {
-          result[`${filterType}_filter`] = filters.map((filter) => ({
-            ...filter,
-            label:
-              filter.type === 'national_code'
-                ? this.getAttributeLabelById('national_code', filter.id)
-                : filter.label,
-            count: this.getFilterCount(filter) || '',
-            color:
-              filterType === 'color'
-                ? (config.products.colorMappings &&
-                    config.products.colorMappings[filter.label]) ||
-                  filter.label
-                : undefined
-          }));
+          result[`${filterType}_filter`] = filters.reduce((result, filter) => {
+            if (filterType !== 'national_code') {
+              result = [
+                ...result,
+                {
+                  ...filter,
+                  label: filter.label,
+                  count: this.getFilterCount(filter) || '',
+                  color:
+                    filterType === 'color'
+                      ? (config.products.colorMappings &&
+                          config.products.colorMappings[filter.label]) ||
+                        filter.label
+                      : undefined
+                }
+              ];
+            }
+            return result;
+          }, []);
           return result;
         }, {});
 
@@ -458,7 +473,9 @@ export default {
     activeFiltersCount () {
       let counter = 0;
       Object.keys(this.getCurrentFilters).forEach((key) => {
-        counter += this.getCurrentFilters[key].length;
+        if (key !== 'national_code') {
+          counter += this.getCurrentFilters[key].length;
+        }
       });
       return counter;
     },
@@ -478,26 +495,19 @@ export default {
     $route: {
       immediate: true,
       handler (to) {
-        // console.log(to.path.includes('national_code'), 'hey')
-        if (to.fullPath.includes('national_code') === false) {
-          // const savedVehicles = JSON.parse(localStorage.getItem('vehicles'));
-          const activeNationalCode = JSON.parse(
-            localStorage.getItem('active-vehicle')
-          );
-          this.activeVehicle = this.getActiveVehicleData(this.activeVehicle);
+        // if (to.fullPath.includes('national_code') === false) {
+        //   const activeNationalCode = localStorage.getItem('active-vehicle');
 
-          console.log(this.activeVehicle, 'hello');
+        //   const filter = {
+        //     color: undefined,
+        //     count: '',
+        //     id: this.getAttributeIdByLabel('national_code', activeNationalCode),
+        //     label: activeNationalCode,
+        //     type: 'national_code'
+        //   };
 
-          const filter = {
-            color: undefined,
-            count: '',
-            id: this.getAttributeIdByLabel('national_code', activeNationalCode),
-            label: activeNationalCode,
-            type: 'national_code'
-          };
-
-          this.$store.dispatch('category-next/switchSearchFilters', [filter]);
-        }
+        //   this.$store.dispatch('category-next/switchSearchFilters', [filter]);
+        // }
         if (to.query.page) {
           this.changePage(parseInt(to.query.page) || 1);
         }
@@ -530,6 +540,9 @@ export default {
     }
   },
   mounted () {
+    const activeNationalCode = localStorage.getItem('active-vehicle');
+    this.activeVehicle = this.getActiveVehicleData(activeNationalCode);
+
     this.unsubscribeFromStoreAction = this.$store.subscribeAction((action) => {
       if (action.type === 'category-next/loadAvailableFiltersFrom') {
         this.aggregations = action.payload.aggregations;
@@ -704,12 +717,22 @@ export default {
     }
   }
   &__aside {
-    align-items: center;
     display: flex;
-    flex: 0 0 15%;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 0 23%;
     padding: var(--spacer-sm) var(--spacer-sm);
     border: 1px solid var(--c-light);
     border-width: 0 1px 0 0;
+    .vehicle-cart-card {
+      border-radius: var(--border-radius) var(--border-radius) 0 0;
+      margin-bottom: 0px;
+    }
+    .vehicle-change-button {
+      width: 100%;
+      height: 40px;
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+    }
   }
   &__main {
     align-items: center;
@@ -746,6 +769,7 @@ export default {
   &__filter {
     display: flex;
     grid-area: filter;
+    margin-bottom: 1rem;
   }
   &__filters-icon {
     margin: 0 var(--spacer-sm) 0 0;
@@ -876,7 +900,7 @@ export default {
     transition-delay: calc(0.1s * var(--index));
   }
   @include for-desktop {
-    margin: var(--spacer-sm) 0 0 var(--spacer-sm);
+    margin: var(--spacer-sm);
     &__pagination {
       display: flex;
       justify-content: center;
@@ -937,6 +961,63 @@ export default {
     --button-background: var(--c-light);
     --button-color: var(--c-dark-variant);
     margin: var(--spacer-xs) 0 0 0;
+  }
+}
+::v-deep .om-vehicle-cart-card {
+  .sf-call-to-action.header {
+    padding: 0;
+  }
+  .title {
+    font-size: 16px;
+    margin: 0;
+    padding-right: var(--spacer-sm);
+  }
+  .products__product-card {
+    --product-card-max-width: 30%;
+  }
+}
+::v-deep .sidebar {
+  flex: 0 0 23%;
+  --_image-width: 100;
+  --_image-height: 200;
+}
+
+.products {
+  ::v-deep .sf-image {
+    --_image-width: 100 !important;
+    --_image-height: 120 !important;
+    img {
+      width: auto !important;
+      height: 120px !important;
+    }
+  }
+  ::v-deep .products__product-card {
+    --product-card-max-width: 25%;
+    margin: 0 15px 15px 15px;
+  }
+  ::v-deep .sf-product-card {
+    &__title {
+      --product-card-title-margin: 2px;
+    }
+  }
+}
+
+@include for-desktop {
+  .navbar__main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sidebar {
+    padding: var(--spacer-sm) var(--spacer-sm);
+    border: 1px solid var(--c-light);
+    .sidebar-wrapper {
+      background: white;
+      padding: var(--spacer-sm);
+    }
+    .sf-accordion {
+      padding-left: 2rem;
+    }
   }
 }
 </style>

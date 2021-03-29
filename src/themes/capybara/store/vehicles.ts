@@ -10,7 +10,7 @@ export const vehiclesStore = {
   actions: {},
   mutations: {
     SET_VEHICLE (state, nationalCode) {
-      const previousVehicles = JSON.parse(localStorage.getItem('vehicles'));
+      const previousVehicles = JSON.parse(localStorage.getItem('vehicles')) || [];
       state.savedVehicles = [...new Set([...previousVehicles, nationalCode])];
       localStorage.setItem('vehicles', JSON.stringify(state.savedVehicles));
       localStorage.setItem('active-vehicle', nationalCode);
@@ -62,7 +62,7 @@ export const vehiclesStore = {
         : [];
     },
     getActiveVehicleData: (state, getters, rootState, rootGetters) => (national_code) => {
-      return vehicleData['vehicles'].find(vehicle => vehicle.National_code === national_code)
+      return vehicleData['vehicles'].find(vehicle => vehicle.National_code === national_code.toString())
     }
   }
 };
