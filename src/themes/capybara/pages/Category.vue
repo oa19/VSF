@@ -11,7 +11,7 @@
       </template>
     </SfBreadcrumbs>
     <div class="navbar section">
-      <div class="navbar__aside desktop-only">
+      <div class="navbar__aside desktop-only" v-if="activeVehicle.National_code">
         <!-- <SfHeading :level="3" :title="$t('Categories')" class="navbar__title" /> -->
         <OmVehicleCartCard
           class="vehicle-cart-card"
@@ -495,19 +495,19 @@ export default {
     $route: {
       immediate: true,
       handler (to) {
-        // if (to.fullPath.includes('national_code') === false) {
-        //   const activeNationalCode = localStorage.getItem('active-vehicle');
+        if (to.fullPath.includes('national_code') === false) {
+          const activeNationalCode = localStorage.getItem('active-vehicle');
 
-        //   const filter = {
-        //     color: undefined,
-        //     count: '',
-        //     id: this.getAttributeIdByLabel('national_code', activeNationalCode),
-        //     label: activeNationalCode,
-        //     type: 'national_code'
-        //   };
+          const filter = {
+            color: undefined,
+            count: '',
+            id: this.getAttributeIdByLabel('national_code', activeNationalCode),
+            label: activeNationalCode,
+            type: 'national_code'
+          };
 
-        //   this.$store.dispatch('category-next/switchSearchFilters', [filter]);
-        // }
+          this.$store.dispatch('category-next/switchSearchFilters', [filter]);
+        }
         if (to.query.page) {
           this.changePage(parseInt(to.query.page) || 1);
         }

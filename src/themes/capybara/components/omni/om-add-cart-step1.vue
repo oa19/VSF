@@ -2,11 +2,11 @@
   <div class="om-add-cart-step1">
     <SfCallToAction
       class="header"
-      :title="$t(`It's fit`)"
-      :description="$t('BMW 330i M Sport 2020')"
-      image="/assets/hero/background.jpg"
+      :title="$t(title)"
+      :description="description"
+      :image="image"
     >
-      <template #button>
+      <template #button v-if="isFit">
         <div class="check__icon">
           <SfCircleIcon
             class="icon"
@@ -46,10 +46,24 @@ export default {
     SfIcon,
     SfCircleIcon
   },
-  data () {
-    return {
-      logosMock: new Array(11).fill('assets/brand/Jaguar.png')
-    };
+  props: {
+    isFit: {
+      type: Boolean,
+      default: true
+    },
+    description: {
+      type: String,
+      default: ''
+    },
+    image: {
+      type: String,
+      default: ''
+    }
+  },
+  computed: {
+    title () {
+      return this.isFit ? `It's fit` : `This product does not fit your`
+    }
   },
   methods: {
     ...mapActions({

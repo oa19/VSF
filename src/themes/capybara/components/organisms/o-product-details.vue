@@ -1,13 +1,21 @@
 <template>
-  <div class="o-product-details product" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-    <meta itemprop="priceCurrency" :content="$store.state.storeView.i18n.currencyCode">
-    <meta itemprop="price" :content="parseFloat(product.price_incl_tax).toFixed(2)">
+  <div
+    class="o-product-details product"
+    itemprop="offers"
+    itemscope
+    itemtype="http://schema.org/Offer"
+  >
+    <meta
+      itemprop="priceCurrency"
+      :content="$store.state.storeView.i18n.currencyCode"
+    >
+    <meta
+      itemprop="price"
+      :content="parseFloat(product.price_incl_tax).toFixed(2)"
+    >
     <meta itemprop="availability" :content="availability">
     <meta itemprop="url" :content="product.url_path">
-    <MProductGallery
-      :gallery="gallery"
-      :configuration="productConfiguration"
-    />
+    <MProductGallery :gallery="gallery" :configuration="productConfiguration" />
     <div class="product__info">
       <MProductShortInfo
         :product="product"
@@ -18,7 +26,11 @@
         <h2 class="add-cart-step-text">
           Step 1 - Check Compatibility
         </h2>
-        <OmAddCartStep1 />
+        <OmAddCartStep1
+          :is-fit="isFit"
+          :description="description"
+          :image="image"
+        />
         <h2 class="add-cart-step-text">
           Step 2 - Select Delivery Method
         </h2>
@@ -36,8 +48,8 @@
   </div>
 </template>
 <script>
-import get from 'lodash-es/get'
-import { mapActions } from 'vuex';
+import get from 'lodash-es/get';
+import { mapActions, mapGetters } from 'vuex';
 import { SfButton } from '@storefront-ui/vue';
 import MProductGallery from 'theme/components/molecules/m-product-gallery';
 import MProductShortInfo from 'theme/components/molecules/m-product-short-info';
@@ -47,8 +59,8 @@ import MProductOptionsConfigurable from 'theme/components/molecules/m-product-op
 import MProductOptionsBundle from 'theme/components/molecules/m-product-options-bundle';
 import MProductOptionsCustom from 'theme/components/molecules/m-product-options-custom';
 import MProductOptionsGroup from 'theme/components/molecules/m-product-options-group';
-import OmAddCartStep1 from 'theme/components/omni/om-add-cart-step1'
-import OmAddCartStep2 from 'theme/components/omni/om-add-cart-step2'
+import OmAddCartStep1 from 'theme/components/omni/om-add-cart-step1';
+import OmAddCartStep2 from 'theme/components/omni/om-add-cart-step2';
 import { ModalList } from 'theme/store/ui/modals';
 
 export default {
@@ -92,8 +104,11 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      getActiveVehicleData: 'vehicles/getActiveVehicleData'
+    }),
     gallery () {
-      return this.productGallery.map(imageObject => ({
+      return this.productGallery.map((imageObject) => ({
         id: imageObject.id,
         mobile: {
           url: imageObject.src,
@@ -106,28 +121,53 @@ export default {
       }));
     },
     reviews () {
-      const baseReviews = get(this.$store.state.review, 'items.items', [])
+      const baseReviews = get(this.$store.state.review, 'items.items', []);
       return baseReviews.map((review) => ({
         author: review.nickname,
         date: review.created_at,
         message: `${review.title}: ${review.detail}`,
         rating: 1 // TODO: remove hardcode
-      }))
+      }));
     },
     availability () {
-      return this.product.stock && this.product.stock.is_in_stock ? 'InStock' : 'OutOfStock'
+      return this.product.stock && this.product.stock.is_in_stock
+        ? 'InStock'
+        : 'OutOfStock';
     },
     sizeOption () {
-      return get(this.productConfiguration, 'size', false)
+      return get(this.productConfiguration, 'size', false);
+    },
+    isFit () {
+      const productNationalCode = this.product.national_code[0];
+      return this.activeVehicleData.length
+        ? productNationalCode === this.activeVehicleData &&
+            this.activeVehicleData.National_code
+        : false;
+    },
+    description () {
+      return this.activeVehicleData.length
+        ? `${this.activeVehicleData.level1} ${this.activeVehicleData.level5} ${this.activeVehicleData.level6} ${this.activeVehicleData.level7} ${this.activeVehicleData.level3}`
+        : '';
+    },
+    image () {
+      return this.activeVehicleData.length ? this.activeVehicleData.Image : '';
     }
+  },
+  data () {
+    return {
+      activeVehicleData: []
+    };
   },
   methods: {
     ...mapActions('ui', {
       openModal: 'openModal'
     }),
     openSizeGuide () {
-      this.openModal({ name: ModalList.SizeGuide })
+      this.openModal({ name: ModalList.SizeGuide });
     }
+  },
+  mounted () {
+    this.activeVehicleData = this.getActiveVehicleData;
   }
 };
 </script>
