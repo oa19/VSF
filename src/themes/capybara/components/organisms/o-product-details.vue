@@ -62,6 +62,7 @@ import MProductOptionsGroup from 'theme/components/molecules/m-product-options-g
 import OmAddCartStep1 from 'theme/components/omni/om-add-cart-step1';
 import OmAddCartStep2 from 'theme/components/omni/om-add-cart-step2';
 import { ModalList } from 'theme/store/ui/modals';
+import * as VehicleStorage from 'theme/store/vehicles-storage';
 
 export default {
   components: {
@@ -105,7 +106,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getActiveVehicleData: 'vehicles/getActiveVehicleData'
+      getAttributeIdByLabel: 'vehicles/getAttributeIdByLabel'
     }),
     gallery () {
       return this.productGallery.map((imageObject) => ({
@@ -138,19 +139,20 @@ export default {
       return get(this.productConfiguration, 'size', false);
     },
     isFit () {
+      console.log('hey', this.activeVehicleData)
       const productNationalCode = this.product.national_code[0];
-      return this.activeVehicleData.length
-        ? productNationalCode === this.activeVehicleData &&
-            this.activeVehicleData.National_code
+      const result = this.activeVehicleData
+        ? +productNationalCode === +this.getAttributeIdByLabel('national_code', this.activeVehicleData.National_code)
         : false;
+      return result
     },
     description () {
-      return this.activeVehicleData.length
+      return this.activeVehicleData
         ? `${this.activeVehicleData.level1} ${this.activeVehicleData.level5} ${this.activeVehicleData.level6} ${this.activeVehicleData.level7} ${this.activeVehicleData.level3}`
         : '';
     },
     image () {
-      return this.activeVehicleData.length ? this.activeVehicleData.Image : '';
+      return this.isFit ? this.activeVehicleData.Image : '/assets/notmatch.jpg';
     }
   },
   data () {
@@ -167,7 +169,7 @@ export default {
     }
   },
   mounted () {
-    this.activeVehicleData = this.getActiveVehicleData;
+    this.activeVehicleData = VehicleStorage.getActiveVehicleData();
   }
 };
 </script>

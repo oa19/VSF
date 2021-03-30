@@ -52,10 +52,9 @@ import { checkWebpSupport } from 'theme/helpers';
 import LHero from 'theme/components/lexas/l-hero';
 import FilterSelect from './filter-select';
 import vehicleData from 'theme/resource/vehicles.json';
-import { prepareRelatedQuery } from '@vue-storefront/core/modules/catalog/queries/related';
-import { prepareCategoryProduct } from 'theme/helpers';
 import { getTopLevelCategories } from 'theme/helpers';
 import { formatCategoryLink } from '@vue-storefront/core/modules/url/helpers';
+import * as VehicleStorage from 'theme/store/vehicles-storage';
 
 export const dropdownKeys = [
   'Brand',
@@ -66,7 +65,6 @@ export const dropdownKeys = [
   'Engine Size',
   'Trim'
 ];
-export const VEHICLE_DATA_KEY = 'vehicles';
 
 export default {
   name: 'OmHero',
@@ -80,11 +78,9 @@ export default {
     ...mapState({
       isWebpSupported: (state) => state.ui.isWebpSupported
     }),
-    ...mapGetters(
-      {
-        getAttributeIdByLabel: 'vehicles/getAttributeIdByLabel'
-      }
-    ),
+    ...mapGetters({
+      getAttributeIdByLabel: 'vehicles/getAttributeIdByLabel'
+    }),
     ...mapGetters('category', ['getCategories', 'getCurrentCategory']),
     newsletterImage () {
       return checkWebpSupport(
@@ -100,7 +96,7 @@ export default {
       )[0].image;
     },
     vehicles () {
-      return vehicleData[VEHICLE_DATA_KEY];
+      return vehicleData[VehicleStorage.VEHICLE_DATA_KEY];
     },
     categories () {
       return getTopLevelCategories(this.getCategories);
@@ -124,28 +120,8 @@ export default {
           (item) => Object.values(data).indexOf(item) >= 0
         );
       });
-      this.$store.commit('vehicles/SET_VEHICLE', filteredVehicles.National_code)
-      this.$router.push(formatCategoryLink(this.categories[0]))
-      // if (!filteredVehicles) this.$router.push('page-not-found');
-      // const attributeId = this.getAttributeIdByLabel(
-      //   'national_code',
-      //   filteredVehicles.National_code
-      // );
-      // if (!attributeId) this.$router.push('page-not-found');
-      // else {
-      // let relatedProductsQuery = prepareRelatedQuery(
-      //   'national_code',
-      //   attributeId
-      // );
-      // const { items } = await this.$store.dispatch('product/findProducts', {
-      //   query: relatedProductsQuery,
-      //   options: {
-      //     populateRequestCacheTags: false,
-      //     prefetchGroupProducts: false
-      //   }
-      // });
-      // this.resultProducts = items.map((item) => prepareCategoryProduct(item));
-      // }
+      VehicleStorage.saveVehicles(filteredVehicles.National_code)
+      this.$router.push(formatCategoryLink(this.categories[0]));
     },
     toggleDropdown (kindIndex) {
       this.selectorData = this.selectorData.map((d, index) => {

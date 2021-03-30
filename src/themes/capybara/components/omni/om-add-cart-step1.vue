@@ -1,16 +1,27 @@
 <template>
   <div class="om-add-cart-step1">
     <SfCallToAction
-      class="header"
+      :class="[{ 'is-fit': isFit }, 'header']"
       :title="$t(title)"
       :description="description"
       :image="image"
     >
       <template #button v-if="isFit">
-        <div class="check__icon">
+        <div class="check__icon is-fit">
           <SfCircleIcon
             class="icon"
             icon="chevron_down"
+            icon-size="20px"
+            icon-color="white"
+            disabled
+          />
+        </div>
+      </template>
+      <template #button v-else>
+        <div class="check__icon not-fit">
+          <SfCircleIcon
+            class="icon"
+            icon="cross"
             icon-size="20px"
             icon-color="white"
             disabled
@@ -32,11 +43,7 @@
 </template>
 
 <script>
-import {
-  SfCallToAction,
-  SfIcon,
-  SfCircleIcon
-} from '@storefront-ui/vue';
+import { SfCallToAction, SfIcon, SfCircleIcon } from '@storefront-ui/vue';
 import { mapActions } from 'vuex';
 
 export default {
@@ -62,7 +69,7 @@ export default {
   },
   computed: {
     title () {
-      return this.isFit ? `It's fit` : `This product does not fit your`
+      return this.isFit ? `It's fit` : `This product does not fit your`;
     }
   },
   methods: {
@@ -81,6 +88,30 @@ export default {
   box-sizing: border-box;
   border-radius: var(--border-radius);
   overflow: hidden;
+  background: white;
+  .sf-call-to-action {
+    &.is-fit {
+      background-position: right;
+      background-size: contain;
+      background-size: 50%;
+      ::v-deep .sf-call-to-action__title {
+        font-size: 55px;
+        font-weight: bold;
+        text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb,
+          0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px RGB(0 0 0 / 10%),
+          0 0 5px RGB(0 0 0 / 10%), 0 1px 3px RGB(0 0 0 / 30%),
+          0 3px 5px RGB(0 0 0 / 20%), 0 5px 10px RGB(0 0 0 / 25%),
+          0 10px 10px RGB(0 0 0 / 20%), 0 20px 20px RGB(0 0 0 / 15%);
+      }
+      ::v-deep .sf-call-to-action__description {
+        font-weight: bold;
+        font-style: italic;
+        font-size: 20px;
+        color: #2b2b2b;;
+        text-shadow: 1px 1px 2px #d8d6d6;
+      }
+    }
+  }
   .footer {
     display: flex;
     justify-content: space-between;
@@ -94,6 +125,11 @@ export default {
     position: relative;
     top: -65px;
     right: 0;
+    &.not-fit {
+      ::v-deep .sf-button {
+        --button-background: #808080;
+      }
+    }
   }
 }
 

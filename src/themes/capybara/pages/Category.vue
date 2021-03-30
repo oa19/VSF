@@ -23,6 +23,7 @@
         />
         <SfButton
           class="vehicle-change-button"
+          @click="openVehicleCart({ type: 'vehiclecart' })"
         >
           {{ $t("Change vehicle") }}
         </SfButton>
@@ -221,7 +222,7 @@
 
 <script>
 import LazyHydrate from 'vue-lazy-hydration';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import castArray from 'lodash-es/castArray';
 import config from 'config';
 import {
@@ -263,6 +264,7 @@ import {
   SfProductCard
 } from '@storefront-ui/vue';
 import OmVehicleCartCard from 'theme/components/omni/om-vehicle-cart/om-vehicle-cart-card';
+import * as VehicleStorage from 'theme/store/vehicles-storage';
 
 const THEME_PAGE_SIZE = 12;
 const LAZY_LOADING_ACTIVATION_BREAKPOINT = 1024;
@@ -345,8 +347,7 @@ export default {
       getBreadcrumbsRoutes: 'breadcrumbs/getBreadcrumbsRoutes',
       getBreadcrumbsCurrent: 'breadcrumbs/getBreadcrumbsCurrent',
       getAttributeLabelById: 'vehicles/getAttributeLabelById',
-      getAttributeIdByLabel: 'vehicles/getAttributeIdByLabel',
-      getActiveVehicleData: 'vehicles/getActiveVehicleData'
+      getAttributeIdByLabel: 'vehicles/getAttributeIdByLabel'
     }),
     isLazyHydrateEnabled () {
       return config.ssr.lazyHydrateFor.includes('category-next.products');
@@ -496,17 +497,18 @@ export default {
       immediate: true,
       handler (to) {
         if (to.fullPath.includes('national_code') === false) {
-          const activeNationalCode = localStorage.getItem('active-vehicle');
+          const activeVehicleData = VehicleStorage.getActiveVehicleData();
 
           const filter = {
             color: undefined,
             count: '',
-            id: this.getAttributeIdByLabel('national_code', activeNationalCode),
-            label: activeNationalCode,
+            id: this.getAttributeIdByLabel('national_code', activeVehicleData.National_code),
+            label: activeVehicleData.National_code,
             type: 'national_code'
           };
 
-          this.$store.dispatch('category-next/switchSearchFilters', [filter]);
+          console.log('hey', filter)
+          this.changeFilter(filter)
         }
         if (to.query.page) {
           this.changePage(parseInt(to.query.page) || 1);
@@ -540,8 +542,7 @@ export default {
     }
   },
   mounted () {
-    const activeNationalCode = localStorage.getItem('active-vehicle');
-    this.activeVehicle = this.getActiveVehicleData(activeNationalCode);
+    this.activeVehicle = VehicleStorage.getActiveVehicleData();
 
     this.unsubscribeFromStoreAction = this.$store.subscribeAction((action) => {
       if (action.type === 'category-next/loadAvailableFiltersFrom') {
@@ -558,6 +559,9 @@ export default {
     window.removeEventListener('resize', this.getBrowserWidth);
   },
   methods: {
+    ...mapActions({
+      openVehicleCart: 'ui/toggleSidebar'
+    }),
     getBrowserWidth () {
       return (this.browserWidth = window.innerWidth);
     },

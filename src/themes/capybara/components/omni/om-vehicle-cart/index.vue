@@ -12,7 +12,7 @@
         v-for="vehicle in vehicles"
         :key="vehicle.National_code"
         :data="{
-          active: true,
+          active: isActiveVehicle(vehicle),
           imgUrl: vehicle.Image,
           title: `${vehicle.level1} ${vehicle.level5} ${vehicle.level6} ${vehicle.level7} ${vehicle.level3}`,
         }"
@@ -76,6 +76,7 @@ import { getProductPrice, getProductPriceFromTotals } from 'theme/helpers';
 import VueOfflineMixin from 'vue-offline/mixin';
 import onEscapePress from '@vue-storefront/core/mixins/onEscapePress';
 import OmVehicleCartCard from './om-vehicle-cart-card';
+import * as VehicleStorage from 'theme/store/vehicles-storage';
 
 import {
   SfButton,
@@ -104,13 +105,15 @@ export default {
   data () {
     return {
       isVehicleCartVisible: false,
+      activeVehicle: null,
       vehicles: []
     };
   },
   watch: {
     isVehicleCartOpen: function (val) {
       if (val === true) {
-        this.vehicles = JSON.parse(localStorage.getItem('vehicles'))
+        this.activeVehicle = VehicleStorage.getActiveVehicleData()
+        this.vehicles = VehicleStorage.getSavedVehiclesData()
       }
     }
   },
@@ -170,11 +173,15 @@ export default {
         product: product,
         qty: newQuantity
       });
+    },
+    isActiveVehicle (data) {
+      return this.activeVehicle && (this.activeVehicle.National_code === data.National_code)
     }
   },
   mounted () {
     this.isVehicleCartVisible = true;
-    this.vehicles = JSON.parse(localStorage.getItem('vehicles'))
+    this.activeVehicle = VehicleStorage.getActiveVehicleData()
+    this.vehicles = VehicleStorage.getSavedVehiclesData()
   }
 };
 </script>
