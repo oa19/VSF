@@ -20,27 +20,7 @@
     </template>
     <template #content-bottom>
       <transition name="fade">
-        <div v-if="totalItems">
-          <SfProperty
-            class="sf-property--full-width my-cart__total-price"
-            v-for="total in totals"
-            :key="total.code"
-          >
-            <template #name>
-              <span class="sf-property__name">{{ total.title }}</span>
-            </template>
-            <template #value>
-              <SfPrice :regular="total.value | price" />
-            </template>
-          </SfProperty>
-          <SfButton
-            class="sf-button--full-width color-secondary"
-            @click.native="goToCheckout"
-          >
-            {{ $t("Go to checkout") }}
-          </SfButton>
-        </div>
-        <div v-else class="sidebar-footer">
+        <div class="sidebar-footer">
           <div class="sidebar-text footer-text">
             Add Another Vehicle to Your Garage
           </div>

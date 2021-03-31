@@ -19,7 +19,7 @@
       "level5": "Diesel",
       "level6": "2.0",
       "level7": "M-Sport X-Drive",
-      "National_code": "94949494",
+      "National_code": "123",
       "Image": "https://res.cloudinary.com/omniauto/image/upload/v1616069903/cosySec_gjqyul.png"
     },
     {
@@ -30,7 +30,7 @@
       "level5": "Petrol",
       "level6": "1.2",
       "level7": "N-Connecta",
-      "National_code": "92929292",
+      "National_code": "123",
       "Image": "https://res.cloudinary.com/omniauto/image/upload/v1616070130/s0523138_koxc7p.jpg"
     }
   ]
