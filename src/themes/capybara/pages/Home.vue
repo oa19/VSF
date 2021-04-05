@@ -1,6 +1,7 @@
 <template>
   <div id="home">
     <OmHero />
+    <page :story="story.content" />
     <SfSection class="section" :title-heading="$t('Shop By Brand')">
       <OmBrandLogos class="brand-logos" />
       <OmCardCollection class="card-collection" />
@@ -20,6 +21,7 @@ import { checkWebpSupport } from 'theme/helpers';
 import OmHero from 'theme/components/omni/om-hero/index';
 import OmBrandLogos from 'theme/components/omni/om-brand-logos';
 import OmCardCollection from 'theme/components/omni/om-card-collection/index';
+import StoryblokMixin from 'src/modules/storyblok/components/StoryblokMixin';
 
 import { SfHero, SfSection, SfBannerGrid, SfBanner } from '@storefront-ui/vue';
 
@@ -44,6 +46,7 @@ export default {
       loadNewsletterPopup: false
     };
   },
+  mixins: [StoryblokMixin],
   computed: {
     ...mapState({
       isWebpSupported: (state) => state.ui.isWebpSupported
