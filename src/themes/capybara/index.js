@@ -16,6 +16,12 @@ import { instagramStore } from 'theme/store/instagram-images';
 import { defaultContentStore } from 'theme/store/default-content';
 import { StorageManager } from '@vue-storefront/core/lib/storage-manager';
 
+import Page from 'theme/components/storyblok/Page'
+import Teaser from 'theme/components/storyblok/Teaser'
+
+Vue.component('page', Page)
+Vue.component('teaser', Teaser)
+
 once('__VUE_EXTEND_DROPPOINT_VPB__', () => {
   Vue.use(VueProgressBar);
 });

@@ -16,17 +16,12 @@ import { isServer, onlineHelper } from '@vue-storefront/core/helpers';
 import MProductCarousel from 'theme/components/molecules/m-product-carousel';
 import ONewsletter from 'theme/components/organisms/o-newsletter';
 import AImagesGrid from 'theme/components/atoms/a-images-grid';
-import { checkWebpSupport } from 'theme/helpers'
-import OmHero from 'theme/components/omni/om-hero/index'
-import OmBrandLogos from 'theme/components/omni/om-brand-logos'
-import OmCardCollection from 'theme/components/omni/om-card-collection/index'
+import { checkWebpSupport } from 'theme/helpers';
+import OmHero from 'theme/components/omni/om-hero/index';
+import OmBrandLogos from 'theme/components/omni/om-brand-logos';
+import OmCardCollection from 'theme/components/omni/om-card-collection/index';
 
-import {
-  SfHero,
-  SfSection,
-  SfBannerGrid,
-  SfBanner
-} from '@storefront-ui/vue';
+import { SfHero, SfSection, SfBannerGrid, SfBanner } from '@storefront-ui/vue';
 
 export default {
   name: 'Home',
@@ -51,7 +46,7 @@ export default {
   },
   computed: {
     ...mapState({
-      isWebpSupported: state => state.ui.isWebpSupported
+      isWebpSupported: (state) => state.ui.isWebpSupported
     }),
     ...mapGetters({
       isLoggedIn: 'user/isLoggedIn',
@@ -64,13 +59,16 @@ export default {
       return onlineHelper.isOnline;
     },
     banners () {
-      return checkWebpSupport(this.promotedOffers.mainBanners, this.isWebpSupported)
+      return checkWebpSupport(
+        this.promotedOffers.mainBanners,
+        this.isWebpSupported
+      );
     },
     heroes () {
-      return checkWebpSupport(this.heroImages, this.isWebpSupported)
+      return checkWebpSupport(this.heroImages, this.isWebpSupported);
     },
     instagramImages () {
-      return checkWebpSupport(this.dummyInstagramImages, this.isWebpSupported)
+      return checkWebpSupport(this.dummyInstagramImages, this.isWebpSupported);
     }
   },
   watch: {
@@ -82,7 +80,7 @@ export default {
   },
   async asyncData ({ store, context }) {
     Logger.info('Calling asyncData in Home (theme)')();
-    if (context) context.output.cacheTags.add(`home`)
+    if (context) context.output.cacheTags.add(`home`);
 
     await Promise.all([
       store.dispatch('homepage/fetchNewCollection'),
@@ -91,11 +89,14 @@ export default {
     ]);
   },
   mounted () {
-    if (!this.isLoggedIn && localStorage.getItem('redirect')) { this.$bus.$emit('modal-show', 'modal-signup'); }
+    console.log(this.story);
+    if (!this.isLoggedIn && localStorage.getItem('redirect')) {
+      this.$bus.$emit('modal-show', 'modal-signup');
+    }
   },
   beforeRouteEnter (to, from, next) {
     if (!isServer && !from.name) {
-      next(vm => {
+      next((vm) => {
         vm.$store.dispatch('homepage/fetchNewCollection').then(() => {
           vm.loading = false;
         });
@@ -107,8 +108,16 @@ export default {
   metaInfo () {
     return {
       title: this.$route.meta.title || this.$i18n.t('Home Page'),
-      meta: this.$route.meta.description ? [{ vmid: 'description', name: 'description', content: this.$route.meta.description }] : []
-    }
+      meta: this.$route.meta.description
+        ? [
+          {
+            vmid: 'description',
+            name: 'description',
+            content: this.$route.meta.description
+          }
+        ]
+        : []
+    };
   }
 };
 </script>
@@ -145,7 +154,7 @@ export default {
   .sf-heading__title.sf-heading__title--h2 {
     font-weight: 700;
     font-size: 26px;
-    color:#444444
+    color: #444444;
   }
 }
 </style>

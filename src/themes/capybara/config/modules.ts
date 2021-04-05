@@ -12,6 +12,7 @@ import { NewsletterModule } from '@vue-storefront/core/modules/newsletter'
 import { PaymentBackendMethodsModule } from 'src/modules/payment-backend-methods'
 import { PaymentCashOnDeliveryModule } from 'src/modules/payment-cash-on-delivery'
 import { LexascmsModule } from 'src/modules/vsf-lexascms/src';
+import { Storyblok } from 'src/modules/storyblok';
 
 import { registerModule } from '@vue-storefront/core/lib/modules'
 
@@ -35,4 +36,5 @@ export function registerClientModules () {
 // Deprecated API, will be removed in 2.0
 export const registerModules: VueStorefrontModule[] = [
   // Example
+  Storyblok
 ]

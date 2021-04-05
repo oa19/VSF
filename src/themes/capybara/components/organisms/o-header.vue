@@ -81,6 +81,7 @@ import { formatCategoryLink } from '@vue-storefront/core/modules/url/helpers';
 import { getTopLevelCategories } from 'theme/helpers';
 import OmHeaderStatus from 'theme/components/omni/om-header-status.vue'
 import OmVehicleIcon from 'theme/components/omni/icons/om-vehicle-icon.vue'
+import StoryblokMixin from 'src/modules/storyblok/components/StoryblokMixin';
 
 export default {
   name: 'OHeader',
@@ -102,6 +103,7 @@ export default {
       isHoveredMenu: false
     }
   },
+  mixins: [StoryblokMixin],
   computed: {
     ...mapState({
       isSearchPanelVisible: state => state.ui.searchpanel

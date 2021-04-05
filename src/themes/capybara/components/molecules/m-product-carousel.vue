@@ -23,11 +23,6 @@
 </template>
 <script>
 import { SfProductCard, SfCarousel } from '@storefront-ui/vue';
-import { htmlDecode } from '@vue-storefront/core/filters';
-import config from 'config';
-import { currentStoreView } from '@vue-storefront/core/lib/multistore';
-import { formatProductLink } from '@vue-storefront/core/modules/url/helpers';
-import { productThumbnailPath } from '@vue-storefront/core/helpers';
 import { prepareCategoryProduct } from 'theme/helpers';
 export default {
   name: 'MProductCarousel',
