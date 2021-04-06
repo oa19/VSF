@@ -20,7 +20,7 @@
         <SfHeaderNavigationItem
           v-for="category in _categories"
           :key="category._uid"
-          @click="isHoveredMenu = !isHoveredMenu"
+          @mouseover="isHoveredMenu = true"
         >
           {{ category.navigation_level_1_title }}
           <MMenu

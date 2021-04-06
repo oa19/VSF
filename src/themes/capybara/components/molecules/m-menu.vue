@@ -11,21 +11,17 @@
           <SfListItem
             v-for="category in categoriesIds"
             :key="category._uid"
+            @click.native="setCurrentCategory(category)"
           >
-            <router-link
-              to="/"
-              @click.native="$emit('close')"
-            >
-              <SfMenuItem :label="category.tier_2_name" @mouseover.native="setCurrentCategory(category)" />
-            </router-link>
+            <SfMenuItem :label="category.tier_2_name" />
           </SfListItem>
         </SfList>
       </SfMegaMenuColumn>
       <SfMegaMenuColumn
-        v-if="showSubCategories"
+        v-show="currentCategory"
       >
-        <SfList>
-          <transition name="sf-fade">
+        <SfList v-if="currentCategory">
+          <transition-group name="sf-fade">
             <SfListItem
               v-for="category in currentCategory.tier_3_linked"
               :key="category._uid"
@@ -37,7 +33,7 @@
                 <SfMenuItem :label="category.tier_3_link_title" />
               </router-link>
             </SfListItem>
-          </transition>
+          </transition-group>
         </SfList>
       </SfMegaMenuColumn>
       <template #aside>
@@ -94,9 +90,6 @@ export default {
     },
     banners () {
       return checkWebpSupport(this.getPromotedOffers.menuAsideBanners, this.isWebpSupported)
-    },
-    showSubCategories () {
-      return !!this.currentCategory
     }
   },
   methods: {
