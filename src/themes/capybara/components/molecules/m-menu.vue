@@ -12,7 +12,12 @@
             v-for="category in categoriesIds"
             :key="category._uid"
           >
-            <SfMenuItem :label="category.tier_2_name" @click="setCurrentCategory(category)" />
+            <router-link
+              to="/"
+              @click.native="$emit('close')"
+            >
+              <SfMenuItem :label="category.tier_2_name" @mouseover.native="setCurrentCategory(category)" />
+            </router-link>
           </SfListItem>
         </SfList>
       </SfMegaMenuColumn>
@@ -20,16 +25,19 @@
         v-if="showSubCategories"
       >
         <SfList>
-          <SfListItem
-            v-for="category in currentCategory.tier_3_linked"
-            :key="category._uid"
-          >
-            <router-link
-              :to="category.tier_3_link_url.linktype"
+          <transition name="sf-fade">
+            <SfListItem
+              v-for="category in currentCategory.tier_3_linked"
+              :key="category._uid"
             >
-              <SfMenuItem :label="category.tier_3_link_title" />
-            </router-link>
-          </SfListItem>
+              <router-link
+                :to="category.tier_3_link_url.linktype"
+                @click.native="$emit('close')"
+              >
+                <SfMenuItem :label="category.tier_3_link_title" />
+              </router-link>
+            </SfListItem>
+          </transition>
         </SfList>
       </SfMegaMenuColumn>
       <template #aside>
