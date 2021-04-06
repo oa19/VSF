@@ -5,20 +5,29 @@
       :visible="visible"
     >
       <SfMegaMenuColumn
-        v-for="category in categories"
-        :key="category.id"
-        :title="category.name"
+        :title="title"
       >
         <SfList>
           <SfListItem
-            v-for="item in category.items"
-            :key="item.id"
+            v-for="category in categoriesIds"
+            :key="category._uid"
+          >
+            <SfMenuItem :label="category.tier_2_name" @click="setCurrentCategory(category)" />
+          </SfListItem>
+        </SfList>
+      </SfMegaMenuColumn>
+      <SfMegaMenuColumn
+        v-if="showSubCategories"
+      >
+        <SfList>
+          <SfListItem
+            v-for="category in currentCategory.tier_3_linked"
+            :key="category._uid"
           >
             <router-link
-              :to="item.link"
-              @click.native="$emit('close')"
+              :to="category.tier_3_link_url.linktype"
             >
-              <SfMenuItem :label="item.name" />
+              <SfMenuItem :label="category.tier_3_link_title" />
             </router-link>
           </SfListItem>
         </SfList>
@@ -40,9 +49,6 @@
 </template>
 <script>
 import { SfMegaMenu, SfList, SfMenuItem, SfBanner } from '@storefront-ui/vue';
-import config from 'config'
-import get from 'lodash-es/get'
-import { prepareCategoryMenuItem } from 'theme/helpers';
 import { mapGetters, mapState } from 'vuex';
 import { checkWebpSupport } from 'theme/helpers'
 export default {
@@ -61,6 +67,11 @@ export default {
       default: () => []
     }
   },
+  watch: {
+    visible (value) {
+      this.currentCategory = null
+    }
+  },
   computed: {
     ...mapState({
       isWebpSupported: state => state.ui.isWebpSupported
@@ -70,35 +81,24 @@ export default {
       getCurrentCategory: 'category/getCurrentCategory',
       getPromotedOffers: 'promoted/getPromotedOffers'
     }),
-    categories () {
-      return this.categoriesIds
-        .map(({ id, children_data: childrenData = [] }) => {
-          const subCategories = childrenData
-            .map(subCategory => prepareCategoryMenuItem(
-              this.getCategories.find(category => category.id === subCategory.id)
-            ))
-            .filter(Boolean)
-            .sort((a, b) => a.position - b.position)
-
-          const category = this.getCategories.find(category => category.id === id)
-          const viewAllMenuItem = prepareCategoryMenuItem({
-            ...category,
-            name: this.$t('View all'),
-            position: 0
-          });
-
-          return {
-            ...prepareCategoryMenuItem(category),
-            items: [viewAllMenuItem, ...subCategories]
-          };
-        })
-        .sort((a, b) => a.position - b.position);
-    },
     currentCategoryTitle () {
       return this.getCurrentCategory.name || ''
     },
     banners () {
       return checkWebpSupport(this.getPromotedOffers.menuAsideBanners, this.isWebpSupported)
+    },
+    showSubCategories () {
+      return !!this.currentCategory
+    }
+  },
+  methods: {
+    setCurrentCategory (category) {
+      this.currentCategory = category
+    }
+  },
+  data () {
+    return {
+      currentCategory: null
     }
   }
 }

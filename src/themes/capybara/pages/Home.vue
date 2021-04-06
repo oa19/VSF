@@ -1,7 +1,7 @@
 <template>
   <div id="home">
     <OmHero />
-    <page :story="story.content" />
+    <!-- <page :story="story.content" /> -->
     <SfSection class="section" :title-heading="$t('Shop By Brand')">
       <OmBrandLogos class="brand-logos" />
       <OmCardCollection class="card-collection" />
@@ -21,7 +21,6 @@ import { checkWebpSupport } from 'theme/helpers';
 import OmHero from 'theme/components/omni/om-hero/index';
 import OmBrandLogos from 'theme/components/omni/om-brand-logos';
 import OmCardCollection from 'theme/components/omni/om-card-collection/index';
-import StoryblokMixin from 'src/modules/storyblok/components/StoryblokMixin';
 
 import { SfHero, SfSection, SfBannerGrid, SfBanner } from '@storefront-ui/vue';
 
@@ -46,7 +45,6 @@ export default {
       loadNewsletterPopup: false
     };
   },
-  mixins: [StoryblokMixin],
   computed: {
     ...mapState({
       isWebpSupported: (state) => state.ui.isWebpSupported
@@ -89,10 +87,14 @@ export default {
       store.dispatch('homepage/fetchNewCollection'),
       store.dispatch('promoted/updateHeadImage'),
       store.dispatch('instagram/updateInstagramImages')
+      // store.dispatch('storyblok/fetchAsync', {
+      //   value: 'test',
+      //   setCurrent: true
+      // })
     ]);
+    if (context) context.output.cacheTags.add(`storyblok`)
   },
   mounted () {
-    console.log(this.story);
     if (!this.isLoggedIn && localStorage.getItem('redirect')) {
       this.$bus.$emit('modal-show', 'modal-signup');
     }

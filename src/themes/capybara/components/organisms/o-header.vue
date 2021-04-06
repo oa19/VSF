@@ -9,37 +9,32 @@
       :active-icon="activeIcon"
       :class="{
         'sf-header--has-mobile-search': isSearchPanelVisible,
-        'sf-header--is-sticky': isSearchPanelVisible
+        'sf-header--is-sticky': isSearchPanelVisible,
       }"
-      :style="{'z-index': isHoveredMenu ? 2 : 1}"
+      :style="{ 'z-index': isHoveredMenu ? 2 : 1 }"
     >
       <template #logo>
         <ALogo />
       </template>
       <template #navigation>
         <SfHeaderNavigationItem
-          v-for="category in categories"
-          :key="category.id"
-          @mouseover="isHoveredMenu = true"
-          @mouseleave="isHoveredMenu = false"
+          v-for="category in _categories"
+          :key="category._uid"
+          @click="isHoveredMenu = !isHoveredMenu"
+          @mouseover.native="() => {}"
         >
-          <router-link
-            :class="{active: isCategoryActive(category)}"
-            :to="categoryLink(category)"
-          >
-            {{ category.name }}
-          </router-link>
+          {{ category.navigation_level_1_title }}
           <MMenu
             :visible="isHoveredMenu && !isSearchPanelVisible"
-            :categories-ids="category.children_data"
-            :title="category.name"
+            :categories-ids="category.level_1"
+            :title="category.navigation_level_1_title"
             @close="isHoveredMenu = false"
           />
         </SfHeaderNavigationItem>
       </template>
       <template #search>
         <div class="search-container">
-          <OSearch :class="{'desktop-only': !isSearchPanelVisible}" />
+          <OSearch :class="{ 'desktop-only': !isSearchPanelVisible }" />
           <SfButton
             v-if="isSearchPanelVisible"
             class="sf-button--text form__action-button form__action-button--secondary mobile-only"
@@ -70,7 +65,12 @@
 </template>
 
 <script>
-import { SfHeader, SfOverlay, SfButton, SfBreadcrumbs } from '@storefront-ui/vue';
+import {
+  SfHeader,
+  SfOverlay,
+  SfButton,
+  SfBreadcrumbs
+} from '@storefront-ui/vue';
 import ALogo from 'theme/components/atoms/a-logo';
 import AAccountIcon from 'theme/components/atoms/a-account-icon';
 import AMicrocartIcon from 'theme/components/atoms/a-microcart-icon';
@@ -79,8 +79,10 @@ import { mapState, mapGetters } from 'vuex';
 import MMenu from 'theme/components/molecules/m-menu';
 import { formatCategoryLink } from '@vue-storefront/core/modules/url/helpers';
 import { getTopLevelCategories } from 'theme/helpers';
-import OmHeaderStatus from 'theme/components/omni/om-header-status.vue'
-import OmVehicleIcon from 'theme/components/omni/icons/om-vehicle-icon.vue'
+import OmHeaderStatus from 'theme/components/omni/om-header-status.vue';
+import OmVehicleIcon from 'theme/components/omni/icons/om-vehicle-icon.vue';
+import StoryblokMixin from 'src/modules/storyblok/components/StoryblokMixin';
+import { Logger } from '@vue-storefront/core/lib/logger';
 
 export default {
   name: 'OHeader',
@@ -100,11 +102,12 @@ export default {
   data () {
     return {
       isHoveredMenu: false
-    }
+    };
   },
+  mixins: [StoryblokMixin],
   computed: {
     ...mapState({
-      isSearchPanelVisible: state => state.ui.searchpanel
+      isSearchPanelVisible: (state) => state.ui.searchpanel
     }),
     ...mapState('ui', ['isMobileMenu']),
     ...mapGetters('category', ['getCategories', 'getCurrentCategory']),
@@ -115,27 +118,43 @@ export default {
     categories () {
       return getTopLevelCategories(this.getCategories);
     },
-    isHomepage () {
-      return this.$route.name === 'home'
+    _categories () {
+      return this.story.content.header_links[0].navigation_items
     }
   },
   methods: {
     categoryLink (category) {
+      console.log(formatCategoryLink(category), 'category')
       return formatCategoryLink(category);
     },
     isCategoryActive (category) {
-      return this.getCurrentCategory.path ? this.getCurrentCategory.path.startsWith(category.path) : false;
+      return this.getCurrentCategory.path
+        ? this.getCurrentCategory.path.startsWith(category.path)
+        : false;
     }
   },
   watch: {
     async isMobileMenu (status) {
       if (this.isMobileMenu) {
         // we can't add this style to body because sfui also add/remove overflow to body and there may be conflict
-        document.documentElement.style.overflow = 'hidden'
+        document.documentElement.style.overflow = 'hidden';
       } else {
-        document.documentElement.style.overflow = ''
+        document.documentElement.style.overflow = '';
       }
     }
+  },
+  mounted () {
+    // console.log(this.categories, 'hey')
+    console.log(this.story, 'story')
+    console.log(this._categories)
+  },
+  async created () {
+    Logger.info('Calling asyncData in Header (storyblok)')();
+
+    await this.$store.dispatch('storyblok/fetchAsync', {
+      value: 'global',
+      setCurrent: true
+    });
   }
 };
 </script>
@@ -189,7 +208,9 @@ export default {
       visibility: visible;
       top: 0;
       z-index: 1;
-      --mega-menu-aside-menu-height: calc(100vh - var(--bottom-navigation-height) - var(--bar-height));
+      --mega-menu-aside-menu-height: calc(
+        100vh - var(--bottom-navigation-height) - var(--bar-height)
+      );
     }
   }
 }

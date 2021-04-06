@@ -21,20 +21,20 @@ export default {
       }
     })
   },
-  asyncData ({ store, route, context }) {
-    return new Promise((resolve, reject) => {
-      store.dispatch('storyblok/fetchAsync', {
-        value: route.fullPath,
-        setCurrent: true
-      }).then(data => {
-        if (context) context.output.cacheTags.add(`storyblok`)
-        resolve(data)
-      }).catch(err => {
-        console.error(err)
-        reject(err)
-      })
-    })
-  },
+  // asyncData ({ store, route, context }) {
+  //   return new Promise((resolve, reject) => {
+  //     store.dispatch('storyblok/fetchAsync', {
+  //       value: route.fullPath,
+  //       setCurrent: true
+  //     }).then(data => {
+  //       if (context) context.output.cacheTags.add(`storyblok`)
+  //       resolve(data)
+  //     }).catch(err => {
+  //       console.error(err)
+  //       reject(err)
+  //     })
+  //   })
+  // },
   methods: {
   }
 }

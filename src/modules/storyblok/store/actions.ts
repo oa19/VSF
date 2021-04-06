@@ -9,8 +9,7 @@ export const actions: ActionTree<StoryblokState, any> = {
   fetchAsync (context, { value, setcurrent = true }) {
     console.log('Storyblok is being fetched ...')
     Logger.info('Fetching story data asynchronously', 'storyblok', value)()
-    console.log('hey')
-    return Vue.prototype.$storyapi.get('cdn/stories/test', {
+    return Vue.prototype.$storyapi.get('cdn/stories/' + value, {
       version: config.storyblok.version
     }).then((response) => {
       context.commit(types.STORYBLOK_UPD_CURRENT, response.data.story)
