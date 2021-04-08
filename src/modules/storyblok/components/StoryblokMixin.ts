@@ -13,7 +13,6 @@ export default {
       if (event.action === 'input') {
         if (event.story.id === this.story.id) {
           // this.story.content = event.story.content
-          console.log(event)
           this.$store.commit('storyblok/STORYBLOK_UPD_CURRENT', event.story)
         }
       } else if (!event.slugChanged) {

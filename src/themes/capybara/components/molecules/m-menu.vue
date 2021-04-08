@@ -21,19 +21,17 @@
         v-show="currentCategory"
       >
         <SfList v-if="currentCategory">
-          <transition-group name="sf-fade">
-            <SfListItem
-              v-for="category in currentCategory.tier_3_linked"
-              :key="category._uid"
+          <SfListItem
+            v-for="category in currentCategory.tier_3_linked"
+            :key="category._uid"
+          >
+            <router-link
+              :to="category.tier_3_link_url.linktype"
+              @click.native="$emit('close')"
             >
-              <router-link
-                :to="category.tier_3_link_url.linktype"
-                @click.native="$emit('close')"
-              >
-                <SfMenuItem :label="category.tier_3_link_title" />
-              </router-link>
-            </SfListItem>
-          </transition-group>
+              <SfMenuItem :label="category.tier_3_link_title" />
+            </router-link>
+          </SfListItem>
         </SfList>
       </SfMegaMenuColumn>
       <template #aside>

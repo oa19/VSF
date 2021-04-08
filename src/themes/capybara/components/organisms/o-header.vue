@@ -21,8 +21,13 @@
           v-for="category in _categories"
           :key="category._uid"
           @mouseover="isHoveredMenu = true"
+          @mouseleave="isHoveredMenu = false"
         >
-          {{ category.navigation_level_1_title }}
+          <router-link
+            to="/"
+          >
+            {{ category.navigation_level_1_title }}
+          </router-link>
           <MMenu
             :visible="isHoveredMenu && !isSearchPanelVisible"
             :categories-ids="category.level_1"
@@ -118,7 +123,7 @@ export default {
       return getTopLevelCategories(this.getCategories);
     },
     _categories () {
-      return this.story.content.header_links[0].navigation_items
+      return Object.keys(this.story.content).length ? this.story.content.header_links[0].navigation_items : []
     }
   },
   methods: {
