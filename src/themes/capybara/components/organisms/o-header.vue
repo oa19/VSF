@@ -123,7 +123,7 @@ export default {
       return getTopLevelCategories(this.getCategories);
     },
     _categories () {
-      return Object.keys(this.story.content).length ? this.story.content.header_links[0].navigation_items : []
+      return Object.keys(this.story).length ? this.story.content.header_links[0].navigation_items : []
     }
   },
   methods: {
