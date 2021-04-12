@@ -2,6 +2,7 @@
   <div id="home">
     <OmHero />
     <!-- <page :story="story.content" /> -->
+    <svg-viewer />
     <SfSection class="section" :title-heading="$t('Shop By Brand')">
       <OmBrandLogos class="brand-logos" />
       <OmCardCollection class="card-collection" />
@@ -23,6 +24,7 @@ import OmBrandLogos from 'theme/components/omni/om-brand-logos';
 import OmCardCollection from 'theme/components/omni/om-card-collection/index';
 
 import { SfHero, SfSection, SfBannerGrid, SfBanner } from '@storefront-ui/vue';
+import SvgViewer from 'theme/components/svg-viewer'
 
 export default {
   name: 'Home',
@@ -37,7 +39,8 @@ export default {
     AImagesGrid,
     OmHero,
     OmBrandLogos,
-    OmCardCollection
+    OmCardCollection,
+    SvgViewer
   },
   data () {
     return {
