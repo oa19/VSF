@@ -73,11 +73,11 @@ export default {
         for (let i = 0; i < g_container.childNodes.length; i++) {
           let g = g_container.childNodes[i];
           if (g.nodeName === 'g') {
-            if (this.imageCode > 0) {
+            if (Number(this.imageCode) > 0) {
               g.setAttribute('v-if', `false`);
             }
-            if (this.imageCode === Number(g.getAttribute('id'))) {
-              if (this.imageCode > 0) g.setAttribute('v-if', `true`);
+            if (Number(this.imageCode) === Number(g.getAttribute('id'))) {
+              if (Number(this.imageCode) > 0) g.setAttribute('v-if', `true`);
               g.childNodes.forEach((child_g) => {
                 if (child_g.nodeName === 'g') {
                   child_g.removeAttribute('onclick');

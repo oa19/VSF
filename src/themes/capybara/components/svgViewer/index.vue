@@ -24,12 +24,12 @@ export default {
   },
   props: {
     imageCode: {
-      type: Number,
-      default: 43
+      type: String,
+      default: '43'
     },
     imageId: {
-      type: Number,
-      default: 713500110101,
+      type: String,
+      default: '713500110101',
       required: true
     },
     width: {

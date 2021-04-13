@@ -87,7 +87,7 @@ export default {
       }
     },
     imageCode () {
-      let code = 1;
+      let code = '1';
       if (this.getCurrentProduct.image_code) {
         console.log(typeof this.getCurrentProduct.image_code, 'image_Code', this.getCurrentProduct.image_code)
         return this.getCurrentProduct.image_code;
