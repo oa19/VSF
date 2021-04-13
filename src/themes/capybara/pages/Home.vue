@@ -2,7 +2,7 @@
   <div id="home">
     <OmHero />
     <!-- <page :story="story.content" /> -->
-    <svg-viewer />
+    <svg-viewer :image-code="25" :image-id="713500110101" :width="500" :height="500" />
     <SfSection class="section" :title-heading="$t('Shop By Brand')">
       <OmBrandLogos class="brand-logos" />
       <OmCardCollection class="card-collection" />

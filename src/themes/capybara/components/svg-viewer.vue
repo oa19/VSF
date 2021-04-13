@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div id="svgTemplate" />
+    <div v-if="loading" id="svgTemplate" />
+    <div v-else>
+      Loading image...
+    </div>
   </div>
 </template>
 <script>
@@ -11,26 +14,40 @@ const xmlserializer = require('xmlserializer');
 export default {
   name: 'SvgViewer',
   props: {
-    objectId: {
+    imageCode: {
       type: Number,
       default: 43
+    },
+    imageId: {
+      type: Number,
+      default: 7135001101022,
+      required: true
+    },
+    width: {
+      type: Number,
+      default: 500
+    },
+    height: {
+      type: Number,
+      default: 500
     }
   },
   data () {
     return {
-      /* Overall situation */
-      Svgurl: '', // url of SVG
-      Svgdom: null // obtained SVG element
-      /* Svg variables */
+      Svgdom: null, // obtained SVG element,
+      loading: false
     };
   },
   mounted () {
     this.$nextTick(() => {
+      this.loading = true;
       this.getSvg();
-    })
-    window['handleClick'] = () => {
-      console.log('hey');
-    };
+      this.loading = false;
+    });
+    /** Svg click event */
+    // window['handleClick'] = () => {
+    //   console.log('hey');
+    // };
   },
   methods: {
     // Initialize svg
@@ -39,26 +56,31 @@ export default {
       const xhr = new XMLHttpRequest();
       xhr.open(
         'GET',
-        'http://localhost:3000/assets/svg/713500110101.svg',
+        'http://localhost:3000/assets/svg/' + this.imageId + '.svg',
         true
       );
       xhr.send();
       /* Listening to XHR objects */
       xhr.addEventListener('load', () => {
-        /* 1. Get dom */
+        /** Get SVG DOM */
         const parser = new DOMParser();
-
-        const resXML = parser.parseFromString(xhr.responseText, 'application/xml');
+        const resXML = parser.parseFromString(
+          xhr.responseText,
+          'application/xml'
+        );
         this.svgDom = resXML.documentElement;
 
-        let first_g = this.svgDom.getElementById('713500110101');
-        first_g.setAttribute('v-on:click', 'this.handleClick()');
-        for (let i = 0; i < first_g.childNodes.length; i++) {
-          let g = first_g.childNodes[i];
+        /** Modify SVG DOM */
+        let g_container = this.svgDom.getElementById(this.imageId);
+        // g_container.setAttribute('v-on:click', 'this.handleClick()');
+        for (let i = 0; i < g_container.childNodes.length; i++) {
+          let g = g_container.childNodes[i];
           if (g.nodeName === 'g') {
-            g.setAttribute('v-if', `false`);
-            if (this.objectId == g.getAttribute('id')) {
-              g.setAttribute('v-if', `true`);
+            if (this.imageCode > 0) {
+              g.setAttribute('v-if', `false`);
+            }
+            if (this.imageCode === Number(g.getAttribute('id'))) {
+              if (this.imageCode > 0) g.setAttribute('v-if', `true`);
               g.childNodes.forEach((child_g) => {
                 if (child_g.nodeName === 'g') {
                   child_g.removeAttribute('onclick');
@@ -66,61 +88,44 @@ export default {
                   child_g.removeAttribute('onmouseout');
                   child_g.removeAttribute('transform');
                 }
-              })
+              });
             }
           }
         }
-
         this.renderSvg();
-        let bbox = document.querySelector('#svgTemplate svg').getBBox();
-        let bbox_width = bbox.x + bbox.width;
-        this.svgDom.setAttribute('viewBox', '0 0 500 500');
-        this.svgDom.setAttribute('width', '500px');
-        this.svgDom.setAttribute('height', '500px');
+
+        /** Apply scale to svg */
+        let svg_container = document
+          .querySelector('#svgTemplate svg')
+          .getBBox();
+        let bbox_width = svg_container.x + svg_container.width;
+        this.svgDom.setAttribute('viewBox', `0 0 ${this.width} ${this.height}`);
+        this.svgDom.setAttribute('width', this.width + 'px');
+        this.svgDom.setAttribute('height', this.height + 'px');
         let scaleTransform = 1;
-        if (bbox.width < 50) {
-          if (bbox.height < 50) {
-            scaleTransform = 5;
-          } else if (bbox.height < 100) {
-            scaleTransform = 4;
-          } else if (bbox.height < 150) {
-            scaleTransform = 3;
-          } else if (bbox.height < 250) {
-            scaleTransform = 2;
+
+        if (svg_container.width > svg_container.height) {
+          if (this.width / svg_container.width < 1) {
+            scaleTransform = this.width / svg_container.width;
+          } else {
+            scaleTransform = this.width / svg_container.width - 0.5;
           }
-        } else if (bbox.width < 110) {
-          if (bbox.height < 50) {
-            scaleTransform = 5;
-          } else if (bbox.height < 100) {
-            scaleTransform = 4;
-          } else if (bbox.height < 150) {
-            scaleTransform = 3;
-          } else if (bbox.height < 250) {
-            scaleTransform = 2;
-          }
-        } else if (bbox.width < 190) {
-          if (bbox.height < 100) {
-            scaleTransform = 3;
-          } else if (bbox.height < 250) {
-            scaleTransform = 2;
-          }
-        } else if (bbox.width < 300) {
-          if (bbox.height < 250) {
-            scaleTransform = 2;
+        } else {
+          if (this.height / svg_container.height < 1) {
+            scaleTransform = this.height / svg_container.height;
+          } else {
+            scaleTransform = this.height / svg_container.height - 0.5;
           }
         }
-
-        first_g.setAttribute('transform', `scale(` + scaleTransform + ')');
+        g_container.setAttribute('transform', `scale(` + scaleTransform + ')');
         this.renderSvg();
-        const bboxNew = document.querySelector('#svgTemplate svg').getBBox();
-        let bbox_x = bboxNew.x;
-        let bbox_y = bboxNew.y;
-        bbox_width = bboxNew.width / 2;
-        let bbox_height = bboxNew.height / 2;
-        let new_x = 250 - bbox_x - bbox_width;
-        let new_y = 250 - bbox_y - bbox_height;
 
-        first_g.setAttribute(
+        /** Apply scale & translate to svg */
+        svg_container = document.querySelector('#svgTemplate svg').getBBox();
+        let new_x = this.width / 2 - svg_container.x - svg_container.width / 2;
+        let new_y = this.height / 2 - svg_container.y - svg_container.height / 2;
+
+        g_container.setAttribute(
           'transform',
           'translate(' +
             new_x +
@@ -135,23 +140,14 @@ export default {
     },
     renderSvg () {
       let sXML = xmlserializer.serializeToString(this.svgDom);
-      let Profile = Vue.extend({
+      let SvgDom = Vue.extend({
         template: "<div id='svgTemplate'>" + sXML + '</div>'
       });
-      // Create an instance and mount it to the element
-      new Profile().$mount('#svgTemplate');
+      new SvgDom().$mount('#svgTemplate');
     }
   },
   beforeDestroy () {
     this.svgDom = null;
-  },
-  watch: {
-    photoResult: {
-      handler (newVal, oldVal) {
-        this.getSvg();
-      },
-      deep: true
-    }
   }
 };
 </script>
@@ -160,5 +156,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 500px;
+  min-width: 500px;
 }
 </style>
