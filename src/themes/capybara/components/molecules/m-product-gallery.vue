@@ -4,13 +4,14 @@
       ref="gallery"
       :images="gallery"
     /> -->
-    <svg-viewer :image-id="713500110101" />
+    <svg-viewer :image-id="imageId" :image-code="imageCode" />
   </div>
 </template>
 
 <script>
 import isEqual from 'lodash-es/isEqual';
-import SvgViewer from 'theme/components/svgViewer/index.vue'
+import SvgViewer from 'theme/components/svgViewer/index.vue';
+import { mapGetters } from 'vuex';
 // import { SfGallery } from '@storefront-ui/vue';
 
 export default {
@@ -31,26 +32,33 @@ export default {
   },
   computed: {
     variantImage () {
-      let variantImage = this.gallery.find(image => {
-        let selectThis = true
+      let variantImage = this.gallery.find((image) => {
+        let selectThis = true;
         for (const [key, value] of Object.entries(this.configuration)) {
           if (
             typeof image.id !== 'undefined' &&
             typeof image.id[key] !== 'undefined' &&
             image.id[key] !== value.id
           ) {
-            selectThis = false
+            selectThis = false;
           }
         }
-        return selectThis || (image.id && image.id.color && String(image.id.color) === String(this.configuration.color.id))
-      })
+        return (
+          selectThis ||
+          (image.id &&
+            image.id.color &&
+            String(image.id.color) === String(this.configuration.color.id))
+        );
+      });
 
       if (!variantImage) {
-        variantImage = this.gallery.find(image => {
-          return typeof image.id.color !== 'undefined' &&
+        variantImage = this.gallery.find((image) => {
+          return (
+            typeof image.id.color !== 'undefined' &&
             typeof this.configuration.color !== 'undefined' &&
             String(image.id.color) === String(this.configuration.color.id)
-        })
+          );
+        });
       }
 
       if (!variantImage) {
@@ -60,16 +68,35 @@ export default {
       return variantImage;
     },
     currentIndex () {
-      const index = this.gallery.findIndex(imageObject =>
+      const index = this.gallery.findIndex((imageObject) =>
         isEqual(imageObject.id, this.variantImage.id)
       );
 
       return index === -1 ? 0 : index;
+    },
+    ...mapGetters({
+      getCurrentProduct: 'product/getCurrentProduct'
+    }),
+    imageId () {
+      if (this.getCurrentProduct && this.getCurrentProduct.image_id) {
+        const imageIdAry = this.getCurrentProduct.image_id.split('.');
+        return imageIdAry[0];
+      } else {
+        return '713500110101';
+      }
+    },
+    imageCode () {
+      let code = 1;
+      if (this.getCurrentProduct.image_code) {
+        return this.getCurrentProduct.image_code;
+      } else {
+        return code
+      }
     }
   },
   watch: {
     currentIndex () {
-      this.$refs.gallery.go(this.currentIndex)
+      this.$refs.gallery.go(this.currentIndex);
     }
   }
 };

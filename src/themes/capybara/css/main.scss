@@ -1,30 +1,36 @@
-@import '~@storefront-ui/vue/styles';
-
+@import "~@storefront-ui/vue/styles";
 :root {
   --border-radius: 0.625rem; // 10px
-
   /** colors **/
   @include generate-color-variants(--_c-green-primary, #18a353);
-
   // Green
   @include assign-color-variants(--c-primary, --_c-green-primary);
-  --c-light-variant: #F4F4F4;
+  --c-light-variant: #f4f4f4;
   .color-light-variant {
     background: var(--c-light-variant);
     color: black;
   }
   --c-grey-text: #444444;
-  --c-grey-text-light: rgb(170, 170, 170);;
-
+  --c-grey-text-light: rgb(170, 170, 170);
   /* Custome SfButton */
   --button-border-radius: 0.7rem;
   --button-text-transform: none;
-
   --breadcrumbs-list-item-seperator: ">";
-
   --add-cart-step-text-color: #c1c1c1;
-
   body {
     --overlay-z-index: 2;
+    background: var(--c-light-variant);
+  }
+  .sf-header-navigation-item {
+    flex: none;
+  }
+  .sf-header__navigation {
+    flex: 1;
+  }
+  .sf-header header {
+    max-width: 1400px;
+  }
+  .om-header-status .status-item {
+    flex: 1;
   }
 }
