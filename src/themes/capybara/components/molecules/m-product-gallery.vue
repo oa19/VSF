@@ -80,6 +80,7 @@ export default {
     imageId () {
       if (this.getCurrentProduct && this.getCurrentProduct.image_id) {
         const imageIdAry = this.getCurrentProduct.image_id.split('.');
+        console.log(typeof imageIdAry[0], 'image_ID', imageIdAry[0])
         return imageIdAry[0];
       } else {
         return '713500110101';
@@ -88,6 +89,7 @@ export default {
     imageCode () {
       let code = 1;
       if (this.getCurrentProduct.image_code) {
+        console.log(typeof this.getCurrentProduct.image_code, 'image_Code', this.getCurrentProduct.image_code)
         return this.getCurrentProduct.image_code;
       } else {
         return code
