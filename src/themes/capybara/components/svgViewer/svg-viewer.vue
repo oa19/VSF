@@ -158,7 +158,5 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 500px;
-  min-width: 500px;
 }
 </style>
