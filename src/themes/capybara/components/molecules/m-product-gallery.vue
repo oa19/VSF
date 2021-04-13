@@ -1,20 +1,23 @@
 <template>
   <div class="m-product-gallery">
-    <SfGallery
+    <!-- <SfGallery
       ref="gallery"
       :images="gallery"
-    />
+    /> -->
+    <svg-viewer :image-id="713500110101" />
   </div>
 </template>
 
 <script>
 import isEqual from 'lodash-es/isEqual';
-import { SfGallery } from '@storefront-ui/vue';
+import SvgViewer from 'theme/components/svgViewer/index.vue'
+// import { SfGallery } from '@storefront-ui/vue';
 
 export default {
   name: 'MProductGallery',
   components: {
-    SfGallery
+    // SfGallery
+    SvgViewer
   },
   props: {
     gallery: {
