@@ -1,5 +1,5 @@
 <template>
-  <div id="svgTemplate" />
+  <div :id="`svgTemplate_${svgId}`" />
 </template>
 <script>
 import Vue from 'vue/dist/vue.esm.js';
@@ -25,6 +25,9 @@ export default {
     height: {
       type: Number,
       default: 500
+    },
+    svgId: {
+      type: Number
     }
   },
   data () {
@@ -33,12 +36,13 @@ export default {
     };
   },
   watch: {
-    imageCode: function (val) {
-      console.log('hey', '_____')
-      this.getSvg();
-    },
-    imageId: function (val) {
-      this.getSvg();
+    imageCode: {
+      immediate: true,
+      handler () {
+        this.$nextTick(() => {
+          this.getSvg();
+        });
+      }
     }
   },
   methods: {
@@ -95,7 +99,7 @@ export default {
 
         /** Apply scale to svg */
         let svg_container = document
-          .querySelector('#svgTemplate svg')
+          .querySelector('#svgTemplate_' + this.svgId + ' svg')
           .getBBox();
         this.svgDom.setAttribute('viewBox', `0 0 ${this.width} ${this.height}`);
         this.svgDom.setAttribute('width', this.width + 'px');
@@ -119,7 +123,9 @@ export default {
         this.renderSvg();
 
         /** Apply scale & translate to svg */
-        svg_container = document.querySelector('#svgTemplate svg').getBBox();
+        svg_container = document
+          .querySelector('#svgTemplate_' + this.svgId + ' svg')
+          .getBBox();
         let new_x = this.width / 2 - svg_container.x - svg_container.width / 2;
         let new_y =
           this.height / 2 - svg_container.y - svg_container.height / 2;
@@ -145,9 +151,9 @@ export default {
     renderSvg () {
       let sXML = xmlserializer.serializeToString(this.svgDom);
       let SvgDom = Vue.extend({
-        template: "<div id='svgTemplate'>" + sXML + '</div>'
+        template: "<div id='svgTemplate_" + this.svgId + "'>" + sXML + '</div>'
       });
-      new SvgDom().$mount('#svgTemplate');
+      new SvgDom().$mount('#svgTemplate_' + this.svgId);
     }
   },
   beforeDestroy () {

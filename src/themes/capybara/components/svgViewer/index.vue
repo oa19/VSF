@@ -1,15 +1,15 @@
 <template>
   <div class="svg-container" id="svgContainer">
-    <div v-if="loading">
+    <!-- <div v-if="loading">
       {{ loadingMessage }}
-    </div>
+    </div> -->
     <svg-viewer-element
-      v-else
       :image-code="imageCode"
       :image-id="imageId"
       :width="width"
       :height="height"
       @finishLoading="finishLoading"
+      :svg-id="svgId"
     />
   </div>
 </template>
@@ -39,20 +39,10 @@ export default {
     height: {
       type: Number,
       default: 500
-    }
-  },
-  watch: {
-    imageCode: {
-      immediate: true,
-      handler (val) {
-        console.log('hey', '_____');
-      }
     },
-    imageId: {
-      immediate: true,
-      handler (val) {
-        console.log('hey, Image ID')
-      }
+    svgId: {
+      type: Number,
+      default: 1
     }
   },
   data () {

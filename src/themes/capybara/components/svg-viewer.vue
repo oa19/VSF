@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <div v-if="loading" id="svgTemplate" />
-    <div v-else>
-      Loading image...
+  <div class="svg-container" id="svgContainer">
+    <div v-show="loading" class="loading-container">
+      <span>{{ loadingMessage }}</span>
     </div>
+    <div v-show="!loading" :id="`svgTemplate_${svgId}`" />
   </div>
 </template>
 <script>
@@ -12,15 +12,15 @@ const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 const xmlserializer = require('xmlserializer');
 
 export default {
-  name: 'SvgViewer',
+  name: 'SvgViewerElement',
   props: {
     imageCode: {
-      type: Number,
-      default: 43
+      type: String,
+      default: '43'
     },
     imageId: {
-      type: Number,
-      default: 7135001101022,
+      type: String,
+      default: '713500110101',
       required: true
     },
     width: {
@@ -30,24 +30,28 @@ export default {
     height: {
       type: Number,
       default: 500
+    },
+    svgId: {
+      type: Number
     }
   },
   data () {
     return {
       Svgdom: null, // obtained SVG element,
-      loading: false
+      loading: false,
+      loadingMessage: 'Loading image...'
     };
   },
-  mounted () {
-    this.$nextTick(() => {
-      this.loading = true;
-      this.getSvg();
-      this.loading = false;
-    });
-    /** Svg click event */
-    // window['handleClick'] = () => {
-    //   console.log('hey');
-    // };
+  watch: {
+    imageCode: {
+      immediate: true,
+      handler () {
+        this.loading = true;
+        this.$nextTick(() => {
+          this.getSvg();
+        });
+      }
+    }
   },
   methods: {
     // Initialize svg
@@ -71,16 +75,21 @@ export default {
         this.svgDom = resXML.documentElement;
 
         /** Modify SVG DOM */
+        if (!this.svgDom) {
+          this.loading = false;
+          this.loadingMessage = 'Loading image failed.';
+          return;
+        }
         let g_container = this.svgDom.getElementById(this.imageId);
         // g_container.setAttribute('v-on:click', 'this.handleClick()');
         for (let i = 0; i < g_container.childNodes.length; i++) {
           let g = g_container.childNodes[i];
           if (g.nodeName === 'g') {
-            if (this.imageCode > 0) {
+            if (Number(this.imageCode) > 0) {
               g.setAttribute('v-if', `false`);
             }
-            if (this.imageCode === Number(g.getAttribute('id'))) {
-              if (this.imageCode > 0) g.setAttribute('v-if', `true`);
+            if (Number(this.imageCode) === Number(g.getAttribute('id'))) {
+              if (Number(this.imageCode) > 0) g.setAttribute('v-if', `true`);
               g.childNodes.forEach((child_g) => {
                 if (child_g.nodeName === 'g') {
                   child_g.removeAttribute('onclick');
@@ -96,9 +105,8 @@ export default {
 
         /** Apply scale to svg */
         let svg_container = document
-          .querySelector('#svgTemplate svg')
+          .querySelector('#svgTemplate_' + this.svgId + ' svg')
           .getBBox();
-        let bbox_width = svg_container.x + svg_container.width;
         this.svgDom.setAttribute('viewBox', `0 0 ${this.width} ${this.height}`);
         this.svgDom.setAttribute('width', this.width + 'px');
         this.svgDom.setAttribute('height', this.height + 'px');
@@ -121,9 +129,12 @@ export default {
         this.renderSvg();
 
         /** Apply scale & translate to svg */
-        svg_container = document.querySelector('#svgTemplate svg').getBBox();
+        svg_container = document
+          .querySelector('#svgTemplate_' + this.svgId + ' svg')
+          .getBBox();
         let new_x = this.width / 2 - svg_container.x - svg_container.width / 2;
-        let new_y = this.height / 2 - svg_container.y - svg_container.height / 2;
+        let new_y =
+          this.height / 2 - svg_container.y - svg_container.height / 2;
 
         g_container.setAttribute(
           'transform',
@@ -136,14 +147,17 @@ export default {
             ')'
         );
         this.renderSvg();
+
+        this.loadingMessage = 'Loading image...';
+        this.loading = false
       });
     },
     renderSvg () {
       let sXML = xmlserializer.serializeToString(this.svgDom);
       let SvgDom = Vue.extend({
-        template: "<div id='svgTemplate'>" + sXML + '</div>'
+        template: "<div id='svgTemplate_" + this.svgId + "'>" + sXML + '</div>'
       });
-      new SvgDom().$mount('#svgTemplate');
+      new SvgDom().$mount('#svgTemplate_' + this.svgId);
     }
   },
   beforeDestroy () {
@@ -152,11 +166,33 @@ export default {
 };
 </script>
 <style lang="scss">
-#svgTemplate {
+.svg-container {
   display: flex;
-  align-items: center;
   justify-content: center;
-  min-height: 500px;
-  min-width: 500px;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  .loading-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    span {
+      min-width: 200px;
+      min-height: 100px;
+    }
+  }
+
+  #svgTemplate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 </style>

@@ -136,7 +136,7 @@
             >
               <SfProductCard
                 v-for="(product, key) in products"
-                :key="product.id"
+                :key="key"
                 :title="product.title"
                 :image="product.image"
                 :regular-price="product.price.regular"
@@ -150,7 +150,7 @@
               >
                 <template #image>
                   <!-- <svg-viewer :width="200" :height="200" :image-code="(key + 1)" image-id="713500110101" /> -->
-                  <svg-viewer :width="200" :height="200" :image-code="product.image_code" :image-id="product.image_id" />
+                  <svg-viewer :width="200" :height="200" :image-code="product.image_code" :image-id="product.image_id" :svg-id="key" />
                 </template>
               </SfProductCard>
             </transition-group>
@@ -270,7 +270,7 @@ import {
 } from '@storefront-ui/vue';
 import OmVehicleCartCard from 'theme/components/omni/om-vehicle-cart/om-vehicle-cart-card';
 import * as VehicleStorage from 'theme/store/vehicles-storage';
-import SvgViewer from 'theme/components/svgViewer/index.vue';
+import SvgViewer from 'theme/components/svg-viewer.vue';
 
 const THEME_PAGE_SIZE = 12;
 const LAZY_LOADING_ACTIVATION_BREAKPOINT = 1024;

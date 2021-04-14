@@ -10,7 +10,7 @@
 
 <script>
 import isEqual from 'lodash-es/isEqual';
-import SvgViewer from 'theme/components/svgViewer/index.vue';
+import SvgViewer from 'theme/components/svg-viewer.vue';
 import { mapGetters } from 'vuex';
 // import { SfGallery } from '@storefront-ui/vue';
 
