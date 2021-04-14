@@ -32,12 +32,14 @@ export default {
       Svgdom: null // obtained SVG element,
     };
   },
-  mounted () {
-    this.getSvg();
-    /** Svg click event */
-    // window['handleClick'] = () => {
-    //   console.log('hey');
-    // };
+  watch: {
+    imageCode: function (val) {
+      console.log('hey', '_____')
+      this.getSvg();
+    },
+    imageId: function (val) {
+      this.getSvg();
+    }
   },
   methods: {
     // Initialize svg

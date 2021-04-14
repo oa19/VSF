@@ -1,10 +1,10 @@
 <template>
   <div class="svg-container" id="svgContainer">
-    <div v-show="loading">
+    <div v-if="loading">
       {{ loadingMessage }}
     </div>
     <svg-viewer-element
-      v-show="!loading"
+      v-else
       :image-code="imageCode"
       :image-id="imageId"
       :width="width"
@@ -41,6 +41,20 @@ export default {
       default: 500
     }
   },
+  watch: {
+    imageCode: {
+      immediate: true,
+      handler (val) {
+        console.log('hey', '_____');
+      }
+    },
+    imageId: {
+      immediate: true,
+      handler (val) {
+        console.log('hey, Image ID')
+      }
+    }
+  },
   data () {
     return {
       loading: true,
@@ -52,6 +66,9 @@ export default {
       this.loading = status;
       this.loadingMessage = message;
     }
+  },
+  mounted () {
+    console.log('hey');
   }
 };
 </script>
