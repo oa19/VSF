@@ -67,7 +67,9 @@ export function prepareCategoryProduct (product) {
     rating: {
       max: 5,
       score: 5
-    }
+    },
+    image_id: product.image_id,
+    image_code: product.image_code
   }
 }
 
