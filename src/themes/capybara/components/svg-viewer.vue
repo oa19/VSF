@@ -57,17 +57,16 @@ export default {
     // Initialize svg
     getSvg () {
       /* Create XHR object */
+      const imageId = this.imageId.split('.')[0]
       const xhr = new XMLHttpRequest();
       xhr.open(
         'GET',
-        'http://localhost:3000/assets/svg/' + this.imageId + '.svg',
+        'http://localhost:3000/assets/svg/' + imageId + '.svg',
         true
       );
       xhr.send();
       /* Listening to XHR objects */
       xhr.addEventListener('load', () => {
-        const imageCode = this.imageCode.split[0]
-
         /** Get SVG DOM */
         const parser = new DOMParser();
         const resXML = parser.parseFromString(
@@ -82,16 +81,16 @@ export default {
           this.loadingMessage = 'Loading image failed.';
           return;
         }
-        let g_container = this.svgDom.getElementById(this.imageId);
+        let g_container = this.svgDom.getElementById(imageId);
         // g_container.setAttribute('v-on:click', 'this.handleClick()');
         for (let i = 0; i < g_container.childNodes.length; i++) {
           let g = g_container.childNodes[i];
           if (g.nodeName === 'g') {
-            if (Number(imageCode) > 0) {
+            if (Number(this.imageCode) > 0) {
               g.setAttribute('v-if', `false`);
             }
-            if (Number(imageCode) === Number(g.getAttribute('id'))) {
-              if (Number(imageCode) > 0) g.setAttribute('v-if', `true`);
+            if (Number(this.imageCode) === Number(g.getAttribute('id'))) {
+              if (Number(this.imageCode) > 0) g.setAttribute('v-if', `true`);
               g.childNodes.forEach((child_g) => {
                 if (child_g.nodeName === 'g') {
                   child_g.removeAttribute('onclick');
