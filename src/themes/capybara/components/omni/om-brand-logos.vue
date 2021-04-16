@@ -1,17 +1,18 @@
 <template>
-  <SfCarousel
-    class="om-brand-logos"
-    :settings="{
-      animationDuration: 3000,
-      rewind: false,
-      perTouch: true,
-      gap: 0,
-    }"
-  >
-    <SfCarouselItem v-for="(logo, index) in logos" :key="index">
-      <SfImage :src="logo" class="logo-wrapper" :alt="logo" loading="lazy" />
-    </SfCarouselItem>
-  </SfCarousel>
+  <div class="om-brand-logos">
+    <div
+      v-for="(logo, index) in logos"
+      class="om-brand-logos__item"
+      :key="index"
+    >
+      <SfImage
+        :src="logo"
+        :srcsets="[]"
+        class="logo-wrapper"
+        alt="logo"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -43,19 +44,19 @@ export default {
 @import "~@storefront-ui/shared/styles/helpers/breakpoints";
 
 .om-brand-logos {
-  background: white;
-  &.sf-carousel {
-    ::v-deep .sf-carousel__controls {
-      display: none;
-    }
-    ::v-deep .sf-carousel__wrapper {
-      max-width: 100%;
-    }
-  }
-  .sf-carousel-item {
-    text-align: center;
-    // width: 160px !important;
-  }
+  list-style-type: none;
+  padding: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+  background: #ffffff;
+  /* margin-top: 20px; */
+  justify-content: space-between;
+
   ::v-deep .sf-image img {
     transition: transform 0.3s;
     height: 80px;
