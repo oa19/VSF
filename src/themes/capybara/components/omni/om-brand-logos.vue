@@ -5,17 +5,18 @@
       animationDuration: 3000,
       rewind: false,
       perTouch: true,
-      gap: 0
+      gap: 0,
     }"
   >
-    <SfCarouselItem v-for="(logo, index) in logosMock" :key="index">
-      <SfImage :src="logo" class="logo-wrapper" />
+    <SfCarouselItem v-for="(logo, index) in logos" :key="index">
+      <SfImage :src="logo" class="logo-wrapper" :alt="logo" loading="lazy" />
     </SfCarouselItem>
   </SfCarousel>
 </template>
 
 <script>
 import { SfImage, SfCarousel } from '@storefront-ui/vue';
+import StoryblokMixin from 'src/modules/storyblok/components/StoryblokMixin';
 
 export default {
   name: 'OmBrandLogos',
@@ -27,6 +28,14 @@ export default {
     return {
       logosMock: new Array(11).fill('assets/brand/Jaguar.png')
     };
+  },
+  mixins: [StoryblokMixin],
+  computed: {
+    logos () {
+      return this.storyContent && this.storyContent['brand_grid']
+        ? this.storyContent['brand_grid'].logos.map(({ logo }) => logo.filename)
+        : [];
+    }
   }
 };
 </script>

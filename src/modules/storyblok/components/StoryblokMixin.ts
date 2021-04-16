@@ -6,7 +6,17 @@ export default {
   computed: {
     ...mapGetters({
       story: 'storyblok/storyCurrent'
-    })
+    }),
+    storyContent () {
+      let contents = {};
+      if (this.story && this.story['current']) {
+        this.story['current'].content.body.forEach((content) => {
+          contents[content.component] = content;
+        });
+      }
+
+      return contents;
+    }
   },
   mounted () {
     this.$storybridge.on(['input', 'published', 'change'], (event) => {

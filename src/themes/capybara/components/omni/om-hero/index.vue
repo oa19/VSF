@@ -68,6 +68,7 @@ export default {
     LHero,
     FilterSelect
   },
+  mixins: [StoryblokMixin],
   computed: {
     ...mapState({
       isWebpSupported: (state) => state.ui.isWebpSupported
@@ -90,18 +91,6 @@ export default {
           this.isWebpSupported
         )[0].image;
       }
-    },
-    storyContent () {
-      let contents = {};
-      if (this.story && this.story['current']) {
-        this.story['current'].content.body.forEach((content) => {
-          contents[content.component] = content;
-        });
-      }
-
-      console.log(contents, 'contents');
-
-      return contents;
     },
     title () {
       return this.storyContent['hero'] ? this.storyContent['hero'].Title : '';
@@ -126,7 +115,6 @@ export default {
       resultProducts: []
     };
   },
-  mixins: [StoryblokMixin],
   methods: {
     ...mapActions('ui', {
       openModal: 'openModal'
