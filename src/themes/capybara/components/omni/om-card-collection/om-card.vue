@@ -1,14 +1,10 @@
 <template>
   <div class="om-card">
-    <SfImage
-      :src="data.imgUrl"
-      loading="lazy"
-      class="image"
-    />
+    <SfImage :src="data.imgUrl" loading="lazy" class="image" />
     <h1>{{ data.title }}</h1>
     <p>{{ data.text }}</p>
-    <a class="link" href="#">
-      <span class="link-text">CTA</span>
+    <a class="link">
+      <span class="link-text">{{ data.link_title }}</span>
       <SfIcon
         icon="chevron_right"
         size="xxs"

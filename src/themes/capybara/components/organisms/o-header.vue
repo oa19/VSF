@@ -30,8 +30,7 @@
           </router-link>
           <MMenu
             :visible="isHoveredMenu && !isSearchPanelVisible"
-            :categories-ids="category.level_1"
-            :title="category.navigation_level_1_title"
+            :category="category"
             @close="isHoveredMenu = false"
           />
         </SfHeaderNavigationItem>
@@ -123,6 +122,7 @@ export default {
       return getTopLevelCategories(this.getCategories);
     },
     _categories () {
+      console.log(this.story)
       return this.story && this.story['global'] ? this.story['global'].content.header_links[0].navigation_items : []
     }
   },

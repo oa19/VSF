@@ -1,82 +1,78 @@
 <template>
   <div class="m-menu sf-mega-menu bg-white">
     <SfMegaMenu
-      :title="title || currentCategoryTitle"
+      :title="categoryTitle || currentCategoryTitle"
       :visible="visible"
     >
-      <SfMegaMenuColumn
-        :title="title"
-      >
+      <SfMegaMenuColumn :title="categoryTitle">
         <SfList>
           <SfListItem
-            v-for="category in categoriesIds"
-            :key="category._uid"
-            @click.native="setCurrentCategory(category)"
+            v-for="categoryItem in subCategory"
+            :key="categoryItem._uid"
+            @click.native="setCurrentCategory(categoryItem)"
           >
-            <SfMenuItem :label="category.tier_2_name" />
+            <SfMenuItem :label="categoryItem.tier_2_name" />
           </SfListItem>
         </SfList>
       </SfMegaMenuColumn>
-      <SfMegaMenuColumn
-        v-show="currentCategory"
-      >
+      <SfMegaMenuColumn v-show="currentCategory">
         <SfList v-if="currentCategory">
           <SfListItem
-            v-for="category in currentCategory.tier_3_linked"
-            :key="category._uid"
+            v-for="categoryItem in currentCategory.tier_3_linked"
+            :key="categoryItem._uid"
           >
             <router-link
-              :to="category.tier_3_link_url.linktype"
+              :to="categoryItem.tier_3_link_url.linktype"
               @click.native="$emit('close')"
             >
-              <SfMenuItem :label="category.tier_3_link_title" />
+              <SfMenuItem :label="categoryItem.tier_3_link_title" />
             </router-link>
           </SfListItem>
         </SfList>
       </SfMegaMenuColumn>
       <template #aside>
         <div class="aside-menu">
-          <SfBanner
-            v-for="(banner, i) in banners"
-            :key="i"
-            :title="banner.title"
-            :image="banner.image"
-            class="aside-banner"
-            :class="`aside-banner--${banner.type}`"
-          />
+          <router-link :to="promoInfo.link">
+            <OmCard
+              :data="promoInfo"
+            />
+          </router-link>
         </div>
       </template>
     </SfMegaMenu>
   </div>
 </template>
 <script>
-import { SfMegaMenu, SfList, SfMenuItem, SfBanner } from '@storefront-ui/vue';
+import {
+  SfMegaMenu,
+  SfList,
+  SfMenuItem,
+  SfBanner
+} from '@storefront-ui/vue';
 import { mapGetters, mapState } from 'vuex';
-import { checkWebpSupport } from 'theme/helpers'
+import { checkWebpSupport } from 'theme/helpers';
+import OmCard from 'theme/components/omni/om-card-collection/om-card.vue';
+
 export default {
-  components: { SfMegaMenu, SfList, SfMenuItem, SfBanner },
+  components: { SfMegaMenu, SfList, SfMenuItem, SfBanner, OmCard },
   props: {
     visible: {
       type: Boolean,
       default: true
     },
-    title: {
-      type: String,
-      default: ''
-    },
-    categoriesIds: {
-      type: Array,
-      default: () => []
+    category: {
+      type: Object,
+      default: () => {}
     }
   },
   watch: {
     visible (value) {
-      this.currentCategory = null
+      this.currentCategory = null;
     }
   },
   computed: {
     ...mapState({
-      isWebpSupported: state => state.ui.isWebpSupported
+      isWebpSupported: (state) => state.ui.isWebpSupported
     }),
     ...mapGetters({
       getCategories: 'category/getCategories',
@@ -84,23 +80,61 @@ export default {
       getPromotedOffers: 'promoted/getPromotedOffers'
     }),
     currentCategoryTitle () {
-      return this.getCurrentCategory.name || ''
+      return this.getCurrentCategory.name || '';
     },
     banners () {
-      return checkWebpSupport(this.getPromotedOffers.menuAsideBanners, this.isWebpSupported)
+      return checkWebpSupport(
+        this.getPromotedOffers.menuAsideBanners,
+        this.isWebpSupported
+      );
+    },
+    categoryTitle () {
+      return this.category && this.category.navigation_level_1_title
+        ? this.category.navigation_level_1_title
+        : '';
+    },
+    subCategory () {
+      return this.category && this.category.level_1
+        ? this.category.level_1
+        : [];
+    },
+    promoInfo () {
+      if (this.category && this.category.navigation_level_1_promo_title) {
+        return {
+          text: this.category.navigation_level_1_promo_copy,
+          imgUrl: this.category.navigation_level_1_promo_image.filename,
+          link: this.category.navigation_level_1_promo_link.url,
+          title: this.category.navigation_level_1_promo_title,
+          link_title: this.category.navigation_level_1_promo_link_title,
+          id: this.category._uid
+        };
+      } else {
+        return {
+          copy: '',
+          image: {
+            filename: ''
+          },
+          link: {
+            url: '/'
+          },
+          title: '',
+          link_title: '',
+          id: ''
+        };
+      }
     }
   },
   methods: {
     setCurrentCategory (category) {
-      this.currentCategory = category
+      this.currentCategory = category;
     }
   },
   data () {
     return {
       currentCategory: null
-    }
+    };
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 @import "~@storefront-ui/shared/styles/helpers/breakpoints";
@@ -123,7 +157,10 @@ export default {
   justify-content: stretch;
   flex-wrap: wrap;
   @include for-desktop {
-     justify-content: space-between;
+    justify-content: space-between;
+  }
+  &--promo-link {
+    text-decoration: underline;
   }
 }
 .aside-banner {
