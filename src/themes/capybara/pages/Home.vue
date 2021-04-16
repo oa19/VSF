@@ -93,7 +93,7 @@ export default {
     ]);
     if (context) context.output.cacheTags.add(`storyblok`)
   },
-  mounted () {
+  async mounted () {
     if (!this.isLoggedIn && localStorage.getItem('redirect')) {
       this.$bus.$emit('modal-show', 'modal-signup');
     }
@@ -122,6 +122,14 @@ export default {
         ]
         : []
     };
+  },
+  async created () {
+    Logger.info('Calling asyncData in Home (storyblok)')();
+
+    await this.$store.dispatch('storyblok/fetchAsync', {
+      value: 'home',
+      setCurrent: true
+    });
   }
 };
 </script>

@@ -1,14 +1,5 @@
 <template>
-  <SfCallToAction
-    class="om-hero"
-    :title="$t('Subscribe to Newsletters')"
-    :description="
-      $t(
-        'Be aware of upcoming sales and events. Receive gifts and special offers!'
-      )
-    "
-    :image="newsletterImage"
-  >
+  <SfCallToAction class="om-hero" :image="newsletterImage">
     <template #button>
       <div class="hero-content">
         <div class="hero-content-selector">
@@ -36,11 +27,13 @@
     </template>
     <template #title>
       <div class="title">
-        SUB TITLE PULLED FROM API
+        {{ title }}
       </div>
     </template>
     <template #description>
-      <LHero id="3b9678b7-23ad-4b61-bf13-7dfc7fdcc5dc" />
+      <div class="sub-title">
+        {{ subTitle }}
+      </div>
     </template>
   </SfCallToAction>
 </template>
@@ -55,6 +48,7 @@ import vehicleData from 'theme/resource/vehicles.json';
 import { getTopLevelCategories } from 'theme/helpers';
 import { formatCategoryLink } from '@vue-storefront/core/modules/url/helpers';
 import * as VehicleStorage from 'theme/store/vehicles-storage';
+import StoryblokMixin from 'src/modules/storyblok/components/StoryblokMixin';
 
 export const dropdownKeys = [
   'Brand',
@@ -83,17 +77,39 @@ export default {
     }),
     ...mapGetters('category', ['getCategories', 'getCurrentCategory']),
     newsletterImage () {
-      return checkWebpSupport(
-        [
-          {
-            image: {
-              webp: '/assets/hero/background.jpg',
-              fallback: '/assets/hero/background.jpg'
+      if (this.story && this.story['current']) {
+        return checkWebpSupport(
+          [
+            {
+              image: {
+                webp: `${this.storyContent['hero'].image.filename}`,
+                fallback: `${this.storyContent['hero'].image.filename}`
+              }
             }
-          }
-        ],
-        this.isWebpSupported
-      )[0].image;
+          ],
+          this.isWebpSupported
+        )[0].image;
+      }
+    },
+    storyContent () {
+      let contents = {};
+      if (this.story && this.story['current']) {
+        this.story['current'].content.body.forEach((content) => {
+          contents[content.component] = content;
+        });
+      }
+
+      console.log(contents, 'contents');
+
+      return contents;
+    },
+    title () {
+      return this.storyContent['hero'] ? this.storyContent['hero'].Title : '';
+    },
+    subTitle () {
+      return this.storyContent['hero']
+        ? this.storyContent['hero'].Sub_title
+        : '';
     },
     vehicles () {
       return vehicleData[VehicleStorage.VEHICLE_DATA_KEY];
@@ -110,6 +126,7 @@ export default {
       resultProducts: []
     };
   },
+  mixins: [StoryblokMixin],
   methods: {
     ...mapActions('ui', {
       openModal: 'openModal'
@@ -120,7 +137,7 @@ export default {
           (item) => Object.values(data).indexOf(item) >= 0
         );
       });
-      VehicleStorage.saveVehicles(filteredVehicles.National_code)
+      VehicleStorage.saveVehicles(filteredVehicles.National_code);
       this.$router.push(formatCategoryLink(this.categories[0]));
     },
     toggleDropdown (kindIndex) {
@@ -190,6 +207,7 @@ export default {
       }
       return result;
     });
+
     /*
       {"text":"Select Brand","showDropdown":false,"items":["BMW","Nissan"]}
      */
@@ -247,6 +265,11 @@ export default {
       align-items: center;
       justify-content: space-between;
     }
+  }
+  .sub-title {
+    color: white;
+    font-size: 45px;
+    font-weight: 700;
   }
 }
 </style>

@@ -123,12 +123,11 @@ export default {
       return getTopLevelCategories(this.getCategories);
     },
     _categories () {
-      return this.story ? this.story.content.header_links[0].navigation_items : []
+      return this.story && this.story['global'] ? this.story['global'].content.header_links[0].navigation_items : []
     }
   },
   methods: {
     categoryLink (category) {
-      console.log(formatCategoryLink(category), 'category')
       return formatCategoryLink(category);
     },
     isCategoryActive (category) {
@@ -146,19 +145,6 @@ export default {
         document.documentElement.style.overflow = '';
       }
     }
-  },
-  mounted () {
-    // console.log(this.categories, 'hey')
-    console.log(this.story, 'story')
-    console.log(this._categories)
-  },
-  async created () {
-    Logger.info('Calling asyncData in Header (storyblok)')();
-
-    await this.$store.dispatch('storyblok/fetchAsync', {
-      value: 'global',
-      setCurrent: true
-    });
   }
 };
 </script>
