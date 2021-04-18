@@ -1,6 +1,6 @@
 <template>
   <div class="om-card">
-    <SfImage :src="data.imgUrl" loading="lazy" class="image" :alt="data.text"/>
+    <SfImage :src="data.imgUrl" loading="lazy" class="image" :alt="data.text" />
     <h1>{{ data.title }}</h1>
     <p>{{ data.text }}</p>
     <div class="link">

@@ -60,100 +60,109 @@ export default {
     getSvg () {
       /* Create XHR object */
       const imageId = this.imageId.split('.')[0];
-      const xhr = new XMLHttpRequest();
-      xhr.open(
-        'GET',
-        'http://localhost:3000/assets/svg/' + imageId + '.svg',
-        true
-      );
-      xhr.send();
-      /* Listening to XHR objects */
-      xhr.addEventListener('load', () => {
-        /** Get SVG DOM */
-        const parser = new DOMParser();
-        const resXML = parser.parseFromString(
-          xhr.responseText,
-          'application/xml'
+      const jsonSvgData = localStorage && localStorage.getItem(imageId)
+      if (jsonSvgData) {
+        this.svgOperation(jsonSvgData, imageId)
+      } else {
+        const xhr = new XMLHttpRequest();
+        xhr.open(
+          'GET',
+          'http://localhost:3000/assets/svg/' + imageId + '.svg',
+          true
         );
-        this.svgDom = resXML.documentElement;
+        xhr.send();
+        /* Listening to XHR objects */
+        xhr.addEventListener('load', () => {
+          this.svgOperation(xhr.responseText, imageId)
+        });
+      }
+    },
+    svgOperation (svgText, imageId) {
+      /** Get SVG DOM */
+      const parser = new DOMParser();
+      const resXML = parser.parseFromString(
+        svgText,
+        'application/xml'
+      );
+      this.svgDom = resXML.documentElement;
 
-        /** Modify SVG DOM */
-        if (!this.svgDom) {
-          this.loading = false;
-          this.loadingMessage = 'Loading image failed.';
-          return;
-        }
-        let g_container = this.svgDom.getElementById(imageId);
-        // g_container.setAttribute('v-on:click', 'this.handleClick()');
-        for (let i = 0; i < g_container.childNodes.length; i++) {
-          let g = g_container.childNodes[i];
-          if (g.nodeName === 'g') {
-            if (Number(this.imageCode) > 0) {
-              g.setAttribute('v-if', `false`);
-            }
-            if (Number(this.imageCode) === Number(g.getAttribute('id'))) {
-              if (Number(this.imageCode) > 0) g.setAttribute('v-if', `true`);
-              g.childNodes.forEach((child_g) => {
-                if (child_g.nodeName === 'g') {
-                  child_g.removeAttribute('onclick');
-                  child_g.removeAttribute('onmouseover');
-                  child_g.removeAttribute('onmouseout');
-                  child_g.removeAttribute('transform');
-                }
-              });
-            }
+      /** Modify SVG DOM */
+      if (!this.svgDom) {
+        this.loading = false;
+        this.loadingMessage = 'Loading image failed.';
+        return;
+      }
+      let g_container = this.svgDom.getElementById(imageId);
+      // g_container.setAttribute('v-on:click', 'this.handleClick()');
+      for (let i = 0; i < g_container.childNodes.length; i++) {
+        let g = g_container.childNodes[i];
+        if (g.nodeName === 'g') {
+          if (Number(this.imageCode) > 0) {
+            g.setAttribute('v-if', `false`);
+          }
+          if (Number(this.imageCode) === Number(g.getAttribute('id'))) {
+            if (Number(this.imageCode) > 0) g.setAttribute('v-if', `true`);
+            g.childNodes.forEach((child_g) => {
+              if (child_g.nodeName === 'g') {
+                child_g.removeAttribute('onclick');
+                child_g.removeAttribute('onmouseover');
+                child_g.removeAttribute('onmouseout');
+                child_g.removeAttribute('transform');
+              }
+            });
           }
         }
-        this.renderSvg();
+      }
+      this.renderSvg();
 
-        /** Apply scale to svg */
-        let svg_container = document
-          .querySelector('#svgTemplate_' + this.svgId + ' svg')
-          .getBBox();
-        this.svgDom.setAttribute('viewBox', `0 0 ${this.width} ${this.height}`);
-        this.svgDom.setAttribute('width', this.width + 'px');
-        this.svgDom.setAttribute('height', this.height + 'px');
-        let scaleTransform = 1;
+      /** Apply scale to svg */
+      let svg_container = document
+        .querySelector('#svgTemplate_' + this.svgId + ' svg')
+        .getBBox();
+      this.svgDom.setAttribute('viewBox', `0 0 ${this.width} ${this.height}`);
+      this.svgDom.setAttribute('width', this.width + 'px');
+      this.svgDom.setAttribute('height', this.height + 'px');
+      let scaleTransform = 1;
 
-        if (svg_container.width > svg_container.height) {
-          if (this.width / svg_container.width < 1) {
-            scaleTransform = this.width / svg_container.width;
-          } else {
-            scaleTransform = this.width / svg_container.width - 0.5;
-          }
+      if (svg_container.width > svg_container.height) {
+        if (this.width / svg_container.width < 1) {
+          scaleTransform = this.width / svg_container.width;
         } else {
-          if (this.height / svg_container.height < 1) {
-            scaleTransform = this.height / svg_container.height;
-          } else {
-            scaleTransform = this.height / svg_container.height - 0.5;
-          }
+          scaleTransform = this.width / svg_container.width - 0.5;
         }
-        g_container.setAttribute('transform', `scale(` + scaleTransform + ')');
-        this.renderSvg();
+      } else {
+        if (this.height / svg_container.height < 1) {
+          scaleTransform = this.height / svg_container.height;
+        } else {
+          scaleTransform = this.height / svg_container.height - 0.5;
+        }
+      }
+      g_container.setAttribute('transform', `scale(` + scaleTransform + ')');
+      this.renderSvg();
 
-        /** Apply scale & translate to svg */
-        svg_container = document
-          .querySelector('#svgTemplate_' + this.svgId + ' svg')
-          .getBBox();
-        let new_x = this.width / 2 - svg_container.x - svg_container.width / 2;
-        let new_y =
+      /** Apply scale & translate to svg */
+      svg_container = document
+        .querySelector('#svgTemplate_' + this.svgId + ' svg')
+        .getBBox();
+      let new_x = this.width / 2 - svg_container.x - svg_container.width / 2;
+      let new_y =
           this.height / 2 - svg_container.y - svg_container.height / 2;
 
-        g_container.setAttribute(
-          'transform',
-          'translate(' +
+      g_container.setAttribute(
+        'transform',
+        'translate(' +
             new_x +
             ', ' +
             new_y +
             ') scale(' +
             scaleTransform +
             ')'
-        );
-        this.renderSvg();
+      );
+      this.renderSvg();
 
-        this.loadingMessage = 'Loading image...';
-        this.loading = false;
-      });
+      this.loadingMessage = 'Loading image...';
+      this.loading = false;
+      localStorage && localStorage.setItem(imageId, svgText)
     },
     renderSvg () {
       let sXML = xmlserializer.serializeToString(this.svgDom);
