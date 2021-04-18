@@ -1,9 +1,9 @@
 <template>
   <div class="om-card">
-    <SfImage :src="data.imgUrl" loading="lazy" class="image" />
+    <SfImage :src="data.imgUrl" loading="lazy" class="image" :alt="data.text"/>
     <h1>{{ data.title }}</h1>
     <p>{{ data.text }}</p>
-    <a class="link">
+    <div class="link">
       <span class="link-text">{{ data.link_title }}</span>
       <SfIcon
         icon="chevron_right"
@@ -12,7 +12,7 @@
         view-box="0 0 24 24"
         :coverage="1"
       />
-    </a>
+    </div>
   </div>
 </template>
 

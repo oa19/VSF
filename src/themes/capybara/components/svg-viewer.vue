@@ -1,18 +1,20 @@
 <template>
   <div class="svg-container" id="svgContainer">
-    <div v-show="loading" class="loading-container">
-      <span>{{ loadingMessage }}</span>
-    </div>
+    <SfLoader :loading="loading" class="loading-container" />
     <div v-show="!loading" :id="`svgTemplate_${svgId}`" />
   </div>
 </template>
 <script>
 import Vue from 'vue/dist/vue.esm.js';
+import { SfLoader } from '@storefront-ui/vue';
 const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 const xmlserializer = require('xmlserializer');
 
 export default {
   name: 'SvgViewerElement',
+  components: {
+    SfLoader
+  },
   props: {
     imageCode: {
       type: String,
@@ -57,7 +59,7 @@ export default {
     // Initialize svg
     getSvg () {
       /* Create XHR object */
-      const imageId = this.imageId.split('.')[0]
+      const imageId = this.imageId.split('.')[0];
       const xhr = new XMLHttpRequest();
       xhr.open(
         'GET',
@@ -150,7 +152,7 @@ export default {
         this.renderSvg();
 
         this.loadingMessage = 'Loading image...';
-        this.loading = false
+        this.loading = false;
       });
     },
     renderSvg () {
@@ -174,6 +176,8 @@ export default {
   width: 100%;
   height: 100%;
   position: relative;
+  min-width: 200px;
+  min-height: 200px;
 
   .loading-container {
     position: absolute;

@@ -32,10 +32,8 @@
       </SfMegaMenuColumn>
       <template #aside>
         <div class="aside-menu">
-          <router-link :to="promoInfo.link">
-            <OmCard
-              :data="promoInfo"
-            />
+          <router-link :to="promoInfo.link" @click.native="$emit('close')">
+            <OmCard :data="promoInfo" />
           </router-link>
         </div>
       </template>
@@ -43,12 +41,7 @@
   </div>
 </template>
 <script>
-import {
-  SfMegaMenu,
-  SfList,
-  SfMenuItem,
-  SfBanner
-} from '@storefront-ui/vue';
+import { SfMegaMenu, SfList, SfMenuItem, SfBanner } from '@storefront-ui/vue';
 import { mapGetters, mapState } from 'vuex';
 import { checkWebpSupport } from 'theme/helpers';
 import OmCard from 'theme/components/omni/om-card-collection/om-card.vue';
