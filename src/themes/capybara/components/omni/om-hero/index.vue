@@ -1,28 +1,31 @@
 <template>
   <SfCallToAction class="om-hero" :image="newsletterImage">
     <template #button>
-      <div class="hero-content">
-        <div class="hero-content-selector">
-          <FilterSelect
-            v-for="(data, i) in selectorData"
-            :key="i"
-            :dropdown-data="getCurrentSelectorData(i, data)"
-            :dropdown-index="i"
-            @toggle-dropdown="toggleDropdown"
-            @hide-dropdown="hideDropdown"
-            @dropdown-item-click="dropdownItemClick"
-          />
-        </div>
-        <SfButton
-          class="color-primary search-button"
-          @click="onSearch"
-          :disabled="disableSearch()"
-        >
-          <div class="search-button-content">
-            SELECT &<br>
-            SAVE MODEL
+      <div class="button-container">
+        <NewVehicle />
+        <div class="hero-content">
+          <div class="hero-content-selector">
+            <FilterSelect
+              v-for="(data, i) in selectorData"
+              :key="i"
+              :dropdown-data="getCurrentSelectorData(i, data)"
+              :dropdown-index="i"
+              @toggle-dropdown="toggleDropdown"
+              @hide-dropdown="hideDropdown"
+              @dropdown-item-click="dropdownItemClick"
+            />
           </div>
-        </SfButton>
+          <SfButton
+            class="color-primary search-button"
+            @click="onSearch"
+            :disabled="disableSearch()"
+          >
+            <div class="search-button-content">
+              SELECT &<br>
+              SAVE MODEL
+            </div>
+          </SfButton>
+        </div>
       </div>
     </template>
     <template #title>
@@ -49,6 +52,7 @@ import { getTopLevelCategories } from 'theme/helpers';
 import { formatCategoryLink } from '@vue-storefront/core/modules/url/helpers';
 import * as VehicleStorage from 'theme/store/vehicles-storage';
 import StoryblokMixin from 'src/modules/storyblok/components/StoryblokMixin';
+import NewVehicle from './new-vehicle.vue';
 
 export const dropdownKeys = [
   'Brand',
@@ -66,7 +70,8 @@ export default {
     SfCallToAction,
     SfButton,
     LHero,
-    FilterSelect
+    FilterSelect,
+    NewVehicle
   },
   mixins: [StoryblokMixin],
   computed: {
@@ -221,28 +226,31 @@ export default {
     letter-spacing: 3px;
     margin-bottom: 7px;
   }
-  .hero-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .button-container {
     margin-top: 12rem;
-    padding: 1rem;
-    background: white;
-    border-radius: var(--border-radius);
-    .select-group {
+    .hero-content {
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-    .hero-content-selector {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      grid-gap: 10px;
-      align-items: center;
-    }
-    .hero-content-selector::after {
-      content: "";
-      flex: auto;
+      margin-top: 1rem;
+      padding: 1rem;
+      background: white;
+      border-radius: var(--border-radius);
+      .select-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .hero-content-selector {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-gap: 10px;
+        align-items: center;
+      }
+      .hero-content-selector::after {
+        content: "";
+        flex: auto;
+      }
     }
   }
   .search-button {
