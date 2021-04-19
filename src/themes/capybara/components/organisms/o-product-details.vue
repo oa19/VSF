@@ -139,7 +139,6 @@ export default {
       return get(this.productConfiguration, 'size', false);
     },
     isFit () {
-      console.log('hey', this.activeVehicleData)
       const productNationalCode = this.product.national_code[0];
       const result = this.activeVehicleData
         ? +productNationalCode === +this.getAttributeIdByLabel('national_code', this.activeVehicleData.National_code)

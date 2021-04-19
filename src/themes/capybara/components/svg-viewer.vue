@@ -7,6 +7,7 @@
 <script>
 import Vue from 'vue/dist/vue.esm.js';
 import { SfLoader } from '@storefront-ui/vue';
+import { mapGetters } from 'vuex';
 const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 const xmlserializer = require('xmlserializer');
 
@@ -55,14 +56,19 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters({
+      getSavedSvg: 'vehicles/getSavedSvg'
+    })
+  },
   methods: {
     // Initialize svg
     getSvg () {
       /* Create XHR object */
       const imageId = this.imageId.split('.')[0];
-      const jsonSvgData = localStorage && localStorage.getItem(imageId)
-      if (jsonSvgData) {
-        this.svgOperation(jsonSvgData, imageId)
+      const isLoadedSvg = this.getSavedSvg(imageId);
+      if (isLoadedSvg) {
+        this.svgOperation(isLoadedSvg, imageId);
       } else {
         const xhr = new XMLHttpRequest();
         xhr.open(
@@ -73,17 +79,14 @@ export default {
         xhr.send();
         /* Listening to XHR objects */
         xhr.addEventListener('load', () => {
-          this.svgOperation(xhr.responseText, imageId)
+          this.svgOperation(xhr.responseText, imageId);
         });
       }
     },
     svgOperation (svgText, imageId) {
       /** Get SVG DOM */
       const parser = new DOMParser();
-      const resXML = parser.parseFromString(
-        svgText,
-        'application/xml'
-      );
+      const resXML = parser.parseFromString(svgText, 'application/xml');
       this.svgDom = resXML.documentElement;
 
       /** Modify SVG DOM */
@@ -145,24 +148,20 @@ export default {
         .querySelector('#svgTemplate_' + this.svgId + ' svg')
         .getBBox();
       let new_x = this.width / 2 - svg_container.x - svg_container.width / 2;
-      let new_y =
-          this.height / 2 - svg_container.y - svg_container.height / 2;
+      let new_y = this.height / 2 - svg_container.y - svg_container.height / 2;
 
       g_container.setAttribute(
         'transform',
-        'translate(' +
-            new_x +
-            ', ' +
-            new_y +
-            ') scale(' +
-            scaleTransform +
-            ')'
+        'translate(' + new_x + ', ' + new_y + ') scale(' + scaleTransform + ')'
       );
       this.renderSvg();
 
       this.loadingMessage = 'Loading image...';
       this.loading = false;
-      localStorage && localStorage.setItem(imageId, svgText)
+      this.$store.commit('vehicles/addNewSvg', {
+        key: imageId,
+        value: svgText
+      });
     },
     renderSvg () {
       let sXML = xmlserializer.serializeToString(this.svgDom);

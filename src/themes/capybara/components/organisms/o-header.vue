@@ -122,7 +122,6 @@ export default {
       return getTopLevelCategories(this.getCategories);
     },
     _categories () {
-      console.log(this.story)
       return this.story && this.story['global'] ? this.story['global'].content.header_links[0].navigation_items : []
     }
   },

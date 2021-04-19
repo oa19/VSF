@@ -514,7 +514,6 @@ export default {
             type: 'national_code'
           };
 
-          console.log('hey', filter)
           this.changeFilter(filter)
         }
         if (to.query.page) {

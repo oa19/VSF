@@ -56,9 +56,6 @@ export default {
       this.loading = status;
       this.loadingMessage = message;
     }
-  },
-  mounted () {
-    console.log('hey');
   }
 };
 </script>
