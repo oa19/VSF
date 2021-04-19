@@ -59,9 +59,9 @@ export default {
         <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://www.w3.org/2003/05/soap-envelope">
           <SOAP-ENV:Header>
             <vrm:SecuritySoapHeader xmlns:vrm="EurotaxGlass's/WebServices/VRMValuation">
-              <vrm:ClientCode>3_4bi0q6yzwruo000s40scwc8ogkws4skc0ogs8k4os8kos0g48s</vrm:ClientCode>
-              <vrm:AccountName>mykolamagento_2474</vrm:AccountName>
-              <vrm:Password>7a416c02b</vrm:Password>
+              <vrm:ClientCode>Test</vrm:ClientCode>
+              <vrm:AccountName>Onmi_Auto</vrm:AccountName>
+              <vrm:Password>gtr*)87Jk1</vrm:Password>
               <vrm:Success>false</vrm:Success>
               <vrm:Denial>true</vrm:Denial>
             </vrm:SecuritySoapHeader>
