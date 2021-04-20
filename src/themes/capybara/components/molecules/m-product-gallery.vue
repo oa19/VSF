@@ -4,7 +4,7 @@
       ref="gallery"
       :images="gallery"
     /> -->
-    <svg-viewer :image-id="imageId" :image-code="imageCode" />
+    <svg-viewer :is-full-image="true" :image-id="imageId" :image-code="imageCode" />
   </div>
 </template>
 

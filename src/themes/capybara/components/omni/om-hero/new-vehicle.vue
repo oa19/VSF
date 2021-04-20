@@ -117,7 +117,7 @@ export default {
     top: 0;
     bottom: 0;
     width: 32px;
-    background-color: #c3002f;
+    background-color: #18a353;
     padding: 8px 0;
     svg {
       width: 32px;

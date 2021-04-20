@@ -1,6 +1,6 @@
 <template>
   <div class="svg-container" id="svgContainer">
-    <SfLoader :loading="loading" class="loading-container" />
+    <!-- <SfLoader :loading="loading" class="loading-container" /> -->
     <div v-show="!loading" :id="`svgTemplate_${svgId}`" />
   </div>
 </template>
@@ -36,6 +36,10 @@ export default {
     },
     svgId: {
       type: Number
+    },
+    isFullImage: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -100,11 +104,7 @@ export default {
       for (let i = 0; i < g_container.childNodes.length; i++) {
         let g = g_container.childNodes[i];
         if (g.nodeName === 'g') {
-          if (Number(this.imageCode) > 0) {
-            g.setAttribute('v-if', `false`);
-          }
-          if (Number(this.imageCode) === Number(g.getAttribute('id'))) {
-            if (Number(this.imageCode) > 0) g.setAttribute('v-if', `true`);
+          if (this.isFullImage) {
             g.childNodes.forEach((child_g) => {
               if (child_g.nodeName === 'g') {
                 child_g.removeAttribute('onclick');
@@ -113,9 +113,44 @@ export default {
                 child_g.removeAttribute('transform');
               }
             });
+
+            if (Number(this.imageCode) === Number(g.getAttribute('id'))) {
+              const all_path = g.querySelectorAll('path');
+              const all_ellipse = g.querySelector('ellipse');
+              const all_polygon = g.querySelector('polygon');
+
+              // all_path.style.fill = 'green'
+              for (let i = 0; i < all_path.length; i++) {
+                all_path[i].setAttribute('fill', 'green');
+                all_path[i].setAttribute('orgfill', 'green');
+              }
+              all_ellipse && all_ellipse.forEach(ellipse => {
+                ellipse.style.fill = 'green'
+              })
+              all_polygon && all_polygon.length && all_polygon.forEach(polygon => {
+                polygon.style.fill = 'green'
+              })
+            }
+          } else {
+            if (Number(this.imageCode) > 0) {
+              g.setAttribute('v-if', `false`);
+            }
+            if (Number(this.imageCode) === Number(g.getAttribute('id'))) {
+              if (Number(this.imageCode) > 0) g.setAttribute('v-if', `true`);
+              g.childNodes.forEach((child_g) => {
+                if (child_g.nodeName === 'g') {
+                  child_g.removeAttribute('onclick');
+                  child_g.removeAttribute('onmouseover');
+                  child_g.removeAttribute('onmouseout');
+                  child_g.removeAttribute('transform');
+                }
+              });
+            }
           }
         }
       }
+
+      console.log(this.svgDom)
       this.renderSvg();
 
       /** Apply scale to svg */
