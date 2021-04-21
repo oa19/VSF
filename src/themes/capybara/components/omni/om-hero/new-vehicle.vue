@@ -53,7 +53,7 @@ export default {
   methods: {
     onSubmit () {
       const xmlhttp = new XMLHttpRequest();
-      xmlhttp.open('POST', 'https://www.val.etgws.co.uk/', true);
+      xmlhttp.open('POST', 'https://www.val.etgws.co.uk/VRMValuationService.asmx', true);
 
       const bodyRequest = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
         <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://www.w3.org/2003/05/soap-envelope">
