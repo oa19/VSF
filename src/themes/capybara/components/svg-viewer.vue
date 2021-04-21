@@ -34,12 +34,13 @@ export default {
       type: Number,
       default: 500
     },
-    svgId: {
-      type: Number
-    },
     isFullImage: {
       type: Boolean,
       default: false
+    },
+    svgId: {
+      type: String,
+      default: '1'
     }
   },
   data () {
@@ -49,8 +50,16 @@ export default {
       loadingMessage: 'Loading image...'
     };
   },
+  computed: {
+    ...mapGetters({
+      getSavedSvg: 'vehicles/getSavedSvg'
+    }),
+    compoundWatchProperty () {
+      return [this.imageCode, this.imageId, this.isFullImage].join();
+    }
+  },
   watch: {
-    imageCode: {
+    compoundWatchProperty: {
       immediate: true,
       handler () {
         this.loading = true;
@@ -59,11 +68,6 @@ export default {
         });
       }
     }
-  },
-  computed: {
-    ...mapGetters({
-      getSavedSvg: 'vehicles/getSavedSvg'
-    })
   },
   methods: {
     // Initialize svg
@@ -116,20 +120,21 @@ export default {
 
             if (Number(this.imageCode) === Number(g.getAttribute('id'))) {
               const all_path = g.querySelectorAll('path');
-              const all_ellipse = g.querySelector('ellipse');
-              const all_polygon = g.querySelector('polygon');
+              const all_ellipse = g.querySelectorAll('ellipse');
+              const all_polygon = g.querySelectorAll('polygon');
+
+              const setColor = (source) => {
+                for (let i = 0; i < source.length; i++) {
+                  source[i].setAttribute('fill', 'green');
+                  source[i].setAttribute('orgfill', 'green');
+                  source[i].style.fill = 'green'
+                }
+              }
 
               // all_path.style.fill = 'green'
-              for (let i = 0; i < all_path.length; i++) {
-                all_path[i].setAttribute('fill', 'green');
-                all_path[i].setAttribute('orgfill', 'green');
-              }
-              all_ellipse && all_ellipse.forEach(ellipse => {
-                ellipse.style.fill = 'green'
-              })
-              all_polygon && all_polygon.length && all_polygon.forEach(polygon => {
-                polygon.style.fill = 'green'
-              })
+              all_path && setColor(all_path);
+              all_ellipse && setColor(all_ellipse);
+              all_polygon && setColor(all_polygon);
             }
           } else {
             if (Number(this.imageCode) > 0) {
@@ -150,7 +155,6 @@ export default {
         }
       }
 
-      console.log(this.svgDom)
       this.renderSvg();
 
       /** Apply scale to svg */

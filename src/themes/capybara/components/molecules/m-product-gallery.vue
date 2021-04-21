@@ -4,7 +4,19 @@
       ref="gallery"
       :images="gallery"
     /> -->
-    <svg-viewer :is-full-image="true" :image-id="imageId" :image-code="imageCode" />
+    <svg-viewer
+      :is-full-image="isFullImage"
+      :image-id="imageId"
+      :image-code="imageCode"
+    />
+    <SfIcon
+      :icon="buttonIcon"
+      size="lg"
+      color="red"
+      role="button"
+      class="button"
+      @click="handleClick"
+    />
   </div>
 </template>
 
@@ -12,13 +24,15 @@
 import isEqual from 'lodash-es/isEqual';
 import SvgViewer from 'theme/components/svg-viewer.vue';
 import { mapGetters } from 'vuex';
-// import { SfGallery } from '@storefront-ui/vue';
+import { SfButton, SfIcon } from '@storefront-ui/vue';
 
 export default {
   name: 'MProductGallery',
   components: {
     // SfGallery
-    SvgViewer
+    SvgViewer,
+    SfButton,
+    SfIcon
   },
   props: {
     gallery: {
@@ -90,13 +104,26 @@ export default {
       if (this.getCurrentProduct.image_code) {
         return this.getCurrentProduct.image_code;
       } else {
-        return code
+        return code;
       }
+    },
+    buttonIcon () {
+      return this.isFullImage ? 'arrow_left' : 'arrow_right'
+    }
+  },
+  data () {
+    return {
+      isFullImage: false
     }
   },
   watch: {
     currentIndex () {
       this.$refs.gallery.go(this.currentIndex);
+    }
+  },
+  methods: {
+    handleClick () {
+      this.isFullImage = !this.isFullImage
     }
   }
 };
@@ -104,5 +131,12 @@ export default {
 <style lang="scss" scoped>
 .m-product-gallery {
   flex: 1;
+  position: relative;
+  .button {
+    position: absolute;
+    bottom: 130px;
+    right: 0;
+    cursor: pointer;
+  }
 }
 </style>
