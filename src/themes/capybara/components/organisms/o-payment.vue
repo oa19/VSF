@@ -190,12 +190,20 @@
     <!-- This dummy container below is needed because src\modules\payment-cash-on-delivery\index.ts
          tries to inject here a component with payment description -->
     <div v-show="false" id="checkout-order-review-additional-container" />
+        <!-- The stripe method integration -->
+    <div class="row mb35 stripe-container" v-if="paymentDetails.paymentMethod === 'stripe_payments'">
+      <div class="col-xs-12">
+          <payment-stripe/>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import { required, minLength } from 'vuelidate/lib/validators';
 import { unicodeAlpha, unicodeAlphaNum } from '@vue-storefront/core/helpers/validators';
 import { Payment } from '@vue-storefront/core/modules/checkout/components/Payment';
+import { mapGetters } from 'vuex';
+import PaymentStripe from 'src/modules/payment-stripe/components/PaymentStripe';
 import {
   SfInput,
   SfRadio,
@@ -214,7 +222,8 @@ export default {
     SfButton,
     SfSelect,
     SfHeading,
-    SfCheckbox
+    SfCheckbox,
+    PaymentStripe
   },
   mixins: [Payment],
   validations () {
@@ -277,6 +286,9 @@ export default {
         }
       };
   },
+  ...mapGetters({
+    paymentDetails: 'checkout/getPaymentDetails'
+  }),
   mounted () {
     createSmoothscroll(document.documentElement.scrollTop || document.body.scrollTop, 0);
   }

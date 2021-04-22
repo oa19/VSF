@@ -1,6 +1,6 @@
 <template>
   <div class="svg-container" id="svgContainer">
-    <!-- <SfLoader :loading="loading" class="loading-container" /> -->
+    <SfLoader :loading="loading" class="loading-container" />
     <div v-show="!loading" :id="`svgTemplate_${svgId}`" />
   </div>
 </template>
@@ -18,11 +18,11 @@ export default {
   },
   props: {
     imageCode: {
-      type: String,
+      type: [ String, null ],
       default: '43'
     },
     imageId: {
-      type: String,
+      type: [ String, null ],
       default: '713500110101',
       required: true
     },
@@ -39,8 +39,8 @@ export default {
       default: false
     },
     svgId: {
-      type: String,
-      default: '1'
+      type: Number,
+      default: 1
     }
   },
   data () {

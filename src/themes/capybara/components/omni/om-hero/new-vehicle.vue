@@ -53,7 +53,7 @@ export default {
   methods: {
     onSubmit () {
       const xmlhttp = new XMLHttpRequest();
-      xmlhttp.open('POST', 'https://www.val.etgws.co.uk/VRMValuationService.asmx', true);
+      xmlhttp.open('POST', 'http://www.val.etgws.co.uk/VRMValuationService.asmx', true);
 
       const bodyRequest = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
         <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://www.w3.org/2003/05/soap-envelope">
@@ -85,7 +85,10 @@ export default {
         }
       }
 
-      xmlhttp.setRequestHeader('Content-Type', 'text/xml');
+      xmlhttp.setRequestHeader('Content-Type', 'text/xml;charset=UTF-8');
+      xmlhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
+      xmlhttp.setRequestHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+      xmlhttp.setRequestHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
       xmlhttp.send(bodyRequest);
     }
   }
