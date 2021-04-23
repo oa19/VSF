@@ -22,7 +22,7 @@
             :key="categoryItem._uid"
           >
             <router-link
-              :to="categoryItem.tier_3_link_url.linktype"
+              :to="categoryItem.tier_3_link_url.link"
               @click.native="$emit('close')"
             >
               <SfMenuItem :label="categoryItem.tier_3_link_title" />

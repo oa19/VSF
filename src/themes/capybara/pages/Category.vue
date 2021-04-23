@@ -11,14 +11,17 @@
       </template>
     </SfBreadcrumbs>
     <div class="navbar section">
-      <div class="navbar__aside desktop-only" v-if="activeVehicle.National_code">
+      <div
+        class="navbar__aside desktop-only"
+        v-if="activeVehicle.National_code"
+      >
         <!-- <SfHeading :level="3" :title="$t('Categories')" class="navbar__title" /> -->
         <OmVehicleCartCard
           class="vehicle-cart-card"
           :data="{
             active: false,
             imgUrl: activeVehicle.Image,
-            title: `${activeVehicle.level1} ${activeVehicle.level5} ${activeVehicle.level6} ${activeVehicle.level7} ${activeVehicle.level3}`,
+            title: getTitle
           }"
         />
         <SfButton
@@ -150,7 +153,13 @@
               >
                 <template #image>
                   <!-- <svg-viewer :width="200" :height="200" :image-code="(key + 1)" image-id="713500110101" /> -->
-                  <svg-viewer :width="200" :height="200" :image-code="product.image_code" :image-id="product.image_id" :svg-id="key" />
+                  <svg-viewer
+                    :width="200"
+                    :height="200"
+                    :image-code="product.image_code"
+                    :image-id="product.image_id"
+                    :svg-id="key"
+                  />
                 </template>
               </SfProductCard>
             </transition-group>
@@ -367,7 +376,7 @@ export default {
     },
     breadcrumbs () {
       return this.getBreadcrumbsRoutes
-        .map((route) => ({
+        .map(route => ({
           text: htmlDecode(route.name),
           route: {
             link: route.route_link
@@ -379,7 +388,7 @@ export default {
     },
     categories () {
       return getTopLevelCategories(this.getCategories)
-        .map((category) => {
+        .map(category => {
           const viewAllMenuItem = {
             ...category,
             name: i18n.t('View all'),
@@ -388,10 +397,10 @@ export default {
 
           const subCategories = category.children_data
             ? category.children_data
-              .map((subCategory) =>
+              .map(subCategory =>
                 prepareCategoryMenuItem(
                   this.getCategories.find(
-                    (category) => category.id === subCategory.id
+                    category => category.id === subCategory.id
                   )
                 )
               )
@@ -430,18 +439,15 @@ export default {
       );
     },
     sortOptions () {
-      return Object.entries(config.products.sortByAttributes).map(
-        (attribute) => {
-          const [label, id] = attribute;
-          return { id, label };
-        }
-      );
+      return Object.entries(config.products.sortByAttributes).map(attribute => {
+        const [label, id] = attribute;
+        return { id, label };
+      });
     },
     sortLabel () {
       const selectedSortOrder =
-        this.sortOptions.find(
-          (sortOption) => sortOption.id === this.sortOrder
-        ) || {};
+        this.sortOptions.find(sortOption => sortOption.id === this.sortOrder) ||
+        {};
       return selectedSortOrder.label || '';
     },
     availableFilters () {
@@ -480,7 +486,7 @@ export default {
     },
     activeFiltersCount () {
       let counter = 0;
-      Object.keys(this.getCurrentFilters).forEach((key) => {
+      Object.keys(this.getCurrentFilters).forEach(key => {
         if (key !== 'national_code') {
           counter += this.getCurrentFilters[key].length;
         }
@@ -488,10 +494,15 @@ export default {
       return counter;
     },
     isFilterActive () {
-      return (filter) =>
+      return filter =>
         castArray(this.getCurrentFilters[filter.type]).find(
-          (variant) => variant && variant.id === filter.id
+          variant => variant && variant.id === filter.id
         ) !== undefined;
+    },
+    getTitle () {
+      return `${this.activeVehicle.level1 || ''} ${this.activeVehicle.level5 ||
+        ''} ${this.activeVehicle.level6 || ''} ${this.activeVehicle.level7 ||
+        ''} ${this.activeVehicle.level3 || ''}`;
     }
   },
   watch: {
@@ -509,12 +520,15 @@ export default {
           const filter = {
             color: undefined,
             count: '',
-            id: this.getAttributeIdByLabel('national_code', activeVehicleData.National_code),
+            id: this.getAttributeIdByLabel(
+              'national_code',
+              activeVehicleData.National_code
+            ),
             label: activeVehicleData.National_code,
             type: 'national_code'
           };
 
-          this.changeFilter(filter)
+          this.changeFilter(filter);
         }
         if (to.query.page) {
           this.changePage(parseInt(to.query.page) || 1);
@@ -532,7 +546,7 @@ export default {
     // SSR no need to invoke SW caching here
     else if (!from.name) {
       // SSR but client side invocation, we need to cache products and invoke requests from asyncData for offline support
-      next(async (vm) => {
+      next(async vm => {
         vm.loading = true;
         await composeInitialPageState(vm.$store, to, true);
         await vm.$store.dispatch('category-next/cacheProducts', { route: to }); // await here is because we must wait for the hydration
@@ -540,7 +554,7 @@ export default {
       });
     } else {
       // Pure CSR, with no initial category state
-      next(async (vm) => {
+      next(async vm => {
         vm.loading = true;
         vm.$store.dispatch('category-next/cacheProducts', { route: to });
         vm.loading = false;
@@ -550,7 +564,7 @@ export default {
   mounted () {
     this.activeVehicle = VehicleStorage.getActiveVehicleData();
 
-    this.unsubscribeFromStoreAction = this.$store.subscribeAction((action) => {
+    this.unsubscribeFromStoreAction = this.$store.subscribeAction(action => {
       if (action.type === 'category-next/loadAvailableFiltersFrom') {
         this.aggregations = action.payload.aggregations;
       }
@@ -645,7 +659,7 @@ export default {
           this.aggregations &&
           this.aggregations[aggregation] &&
           this.aggregations[aggregation].buckets.find(
-            (bucket) => String(bucket.key) === String(filter.id)
+            bucket => String(bucket.key) === String(filter.id)
           );
 
         return bucket ? result + bucket.doc_count : result;
