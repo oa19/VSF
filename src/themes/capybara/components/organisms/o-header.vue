@@ -5,6 +5,7 @@
       :visible="isHoveredMenu || isSearchPanelVisible"
       @click="$store.commit('ui/setSearchpanel', false)"
     />
+       <OmHeaderTopBar />
     <SfHeader
       :active-icon="activeIcon"
       :class="{
@@ -61,9 +62,7 @@
       :categories-ids="categories"
       @close="$store.commit('ui/closeMenu')"
     />
-    <div class="compact-layout">
       <OmHeaderStatus />
-    </div>
   </div>
 </template>
 
@@ -83,6 +82,7 @@ import MMenu from 'theme/components/molecules/m-menu';
 import { formatCategoryLink } from '@vue-storefront/core/modules/url/helpers';
 import { getTopLevelCategories } from 'theme/helpers';
 import OmHeaderStatus from 'theme/components/omni/om-header-status.vue';
+import OmHeaderTopBar from 'theme/components/omni/om-header-status.vue';
 import OmVehicleIcon from 'theme/components/omni/icons/om-vehicle-icon.vue';
 import StoryblokMixin from 'src/modules/storyblok/components/StoryblokMixin';
 import { Logger } from '@vue-storefront/core/lib/logger';
@@ -90,6 +90,7 @@ import { Logger } from '@vue-storefront/core/lib/logger';
 export default {
   name: 'OHeader',
   components: {
+    OmHeaderTopBar,
     SfHeader,
     SfButton,
     ALogo,

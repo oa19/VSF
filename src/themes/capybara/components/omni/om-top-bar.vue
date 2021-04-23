@@ -1,5 +1,5 @@
 <template>
-  <div class="om-header-status">
+  <div class="om-header-topbar"> 
     <div class="status-item">
       <SfImage :width="30" :height="40" src="/assets/icons8-large-courier-truck-64.png" />
      <span>{{title}}</span>
@@ -7,10 +7,6 @@
     <div class="status-item">
       <SfImage :width="30" :height="40" src="/assets/icons8-large-courier-truck-64.png" />
       <LHeaderStatus position="center" class="status-item-title" id="0a351517-3e71-4bc4-b259-b67d8e68e4b9" />
-    </div>
-    <div class="status-item">
-      <SfImage :width="30" :height="40" src="/assets/icons8-large-courier-truck-64.png" />
-      <LHeaderStatus position="right" class="status-item-title" id="0a351517-3e71-4bc4-b259-b67d8e68e4b9" />
     </div>
   </div>
 </template>
@@ -43,13 +39,13 @@ export default {
 <style lang="scss" scoped>
 @import "~@storefront-ui/shared/styles/helpers/breakpoints";
 
-.om-header-status {
+.om-header-topbar { 
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background: var(--c-primary);
+  background: var(--c-light-variant);
   color: white;
-  height: 55px;
+  height: 38px;
   .status-item {
     display: flex;
     justify-content: center;
