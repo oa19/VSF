@@ -1,15 +1,18 @@
 <template>
   <div class="m-product-gallery">
-    <!-- <SfGallery
+    <SfGallery
+      v-if="isJpgRender"
       ref="gallery"
       :images="gallery"
-    /> -->
+    />
     <svg-viewer
+      v-if="!isJpgRender"
       :is-full-image="isFullImage"
       :image-id="imageId"
       :image-code="imageCode"
     />
     <SfIcon
+      v-if="!isJpgRender"
       :icon="buttonIcon"
       size="lg"
       color="red"
@@ -89,7 +92,8 @@ export default {
       return index === -1 ? 0 : index;
     },
     ...mapGetters({
-      getCurrentProduct: 'product/getCurrentProduct'
+      getCurrentProduct: 'product/getCurrentProduct',
+      getAttributeLabelById: 'vehicles/getAttributeLabelById'
     }),
     imageId () {
       if (this.getCurrentProduct && this.getCurrentProduct.image_id) {
@@ -109,6 +113,14 @@ export default {
     },
     buttonIcon () {
       return this.isFullImage ? 'arrow_left' : 'arrow_right'
+    },
+    isJpgRender () {
+      const productLabel = this.getAttributeLabelById(this.getCurrentProduct.product_type)
+      if (productLabel === '12') {
+        return true;
+      } else {
+        return false;
+      }
     }
   },
   data () {
