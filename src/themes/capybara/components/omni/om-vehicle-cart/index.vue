@@ -14,7 +14,7 @@
         :data="{
           active: isActiveVehicle(vehicle),
           imgUrl: vehicle.Image,
-          title: `${vehicle.level1} ${vehicle.level5} ${vehicle.level6} ${vehicle.level7} ${vehicle.level3}`,
+          title: getTitle(vehicle),
         }"
       />
     </template>
@@ -156,12 +156,16 @@ export default {
     },
     isActiveVehicle (data) {
       return this.activeVehicle && (this.activeVehicle.National_code === data.National_code)
+    },
+    getTitle (data) {
+      return `${data.level1 || ''} ${data.level5 || ''} ${data.level6 || ''} ${data.level7 || ''} ${data.level3 || ''}`
     }
   },
   mounted () {
     this.isVehicleCartVisible = true;
     this.activeVehicle = VehicleStorage.getActiveVehicleData()
     this.vehicles = VehicleStorage.getSavedVehiclesData()
+    console.log(this.vehicles, 'hey')
   }
 };
 </script>

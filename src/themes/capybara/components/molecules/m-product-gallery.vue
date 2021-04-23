@@ -27,7 +27,7 @@
 import isEqual from 'lodash-es/isEqual';
 import SvgViewer from 'theme/components/svg-viewer.vue';
 import { mapGetters } from 'vuex';
-import { SfButton, SfIcon } from '@storefront-ui/vue';
+import { SfButton, SfIcon, SfGallery } from '@storefront-ui/vue';
 
 export default {
   name: 'MProductGallery',
@@ -35,7 +35,8 @@ export default {
     // SfGallery
     SvgViewer,
     SfButton,
-    SfIcon
+    SfIcon,
+    SfGallery
   },
   props: {
     gallery: {
@@ -115,8 +116,8 @@ export default {
       return this.isFullImage ? 'arrow_left' : 'arrow_right'
     },
     isJpgRender () {
-      const productLabel = this.getAttributeLabelById(this.getCurrentProduct.product_type)
-      if (productLabel === '12') {
+      const productLabel = this.getAttributeLabelById('product_type', this.getCurrentProduct.product_type)
+      if (productLabel === 'accessories') {
         return true;
       } else {
         return false;

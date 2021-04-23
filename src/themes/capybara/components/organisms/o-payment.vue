@@ -190,10 +190,10 @@
     <!-- This dummy container below is needed because src\modules\payment-cash-on-delivery\index.ts
          tries to inject here a component with payment description -->
     <div v-show="false" id="checkout-order-review-additional-container" />
-        <!-- The stripe method integration -->
+    <!-- The stripe method integration -->
     <div class="row mb35 stripe-container" v-if="paymentDetails.paymentMethod === 'stripe_payments'">
       <div class="col-xs-12">
-          <payment-stripe/>
+        <payment-stripe />
       </div>
     </div>
   </div>

@@ -36,7 +36,7 @@ export const vehiclesStore = {
       attributeId
     ) => {
       const attribute =
-        rootGetters['attribute/getAttributeListByCode'][attributeCode];
+      rootGetters['attribute/getAttributeListByCode'][attributeCode];
       if (!attribute) {
         return null;
       }

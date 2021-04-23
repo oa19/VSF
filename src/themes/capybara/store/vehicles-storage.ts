@@ -2,11 +2,32 @@ import vehicleData from '../resource/vehicles.json';
 
 const VEHICLE_DATA_KEY = 'vehicles';
 
-const saveVehicles = nationalCode => {
+const saveVehicles = data => {
   const previousVehicles = JSON.parse(localStorage.getItem('vehicles')) || [];
-  const newVehicles = [...new Set([...previousVehicles, nationalCode])];
+  let newVehicles;
+  if (typeof data === 'string') {
+    const vehicle = vehicleData['vehicles'].find(
+      v => v.National_code === data
+    );
+    // remove duplicated vehicles
+    previousVehicles.forEach(
+      (v, index) => {
+        if (v.National_code === data) previousVehicles.splice(index, 1);
+      }
+    );
+    newVehicles = [...new Set([...previousVehicles, vehicle])];
+    localStorage.setItem('active-vehicle', JSON.stringify(vehicle));
+  } else {
+    // remove duplicated vehicles
+    previousVehicles.forEach((v, index) => {
+      if (v.National_code === data.National_code) {
+        previousVehicles.splice(index, 1);
+      }
+    });
+    newVehicles = [...new Set([...previousVehicles, data])];
+    localStorage.setItem('active-vehicle', JSON.stringify(data));
+  }
   localStorage.setItem('vehicles', JSON.stringify(newVehicles));
-  localStorage.setItem('active-vehicle', JSON.stringify(nationalCode));
 };
 
 const clearVehicles = () => {
@@ -15,23 +36,11 @@ const clearVehicles = () => {
 };
 
 const getSavedVehiclesData = () => {
-  const savedVehicles = JSON.parse(localStorage.getItem('vehicles'));
-
-  return savedVehicles
-    ? savedVehicles.map(code => {
-      return vehicleData['vehicles'].find(
-        vehicle => vehicle.National_code === code
-      );
-    })
-    : [];
+  return JSON.parse(localStorage.getItem('vehicles'));
 };
 
 const getActiveVehicleData = () => {
-  const savedNationalCode = JSON.parse(localStorage.getItem('active-vehicle'));
-
-  return vehicleData['vehicles'].find(
-    vehicle => vehicle.National_code === savedNationalCode.toString()
-  );
+  return JSON.parse(localStorage.getItem('active-vehicle'));
 }
 
 export {

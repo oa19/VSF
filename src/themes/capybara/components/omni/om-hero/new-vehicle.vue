@@ -39,7 +39,8 @@
 
 <script>
 import { SfButton } from '@storefront-ui/vue';
-import axios from 'axios'
+import axios from 'axios';
+import * as VehicleStorage from 'theme/store/vehicles-storage';
 
 export default {
   components: {
@@ -53,14 +54,12 @@ export default {
   methods: {
     async onSubmit () {
       const {
-        data: {
-          result: { national_code }
-        }
+        data: { result }
       } = await axios.post('http://localhost:8080/api/new-vehicle', {
         vrm: this.vrm
-      })
+      });
 
-      console.log(national_code)
+      VehicleStorage.saveVehicles(result);
     }
   }
 };
