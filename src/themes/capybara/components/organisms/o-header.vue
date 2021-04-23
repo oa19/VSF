@@ -5,7 +5,7 @@
       :visible="isHoveredMenu || isSearchPanelVisible"
       @click="$store.commit('ui/setSearchpanel', false)"
     />
-       <OmHeaderTopBar />
+    <OmHeaderTopBar />
     <SfHeader
       :active-icon="activeIcon"
       :class="{
@@ -62,7 +62,7 @@
       :categories-ids="categories"
       @close="$store.commit('ui/closeMenu')"
     />
-      <OmHeaderStatus />
+    <OmHeaderStatus />
   </div>
 </template>
 

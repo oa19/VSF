@@ -2,7 +2,7 @@
   <div class="om-header-status">
     <div class="status-item">
       <SfImage :width="30" :height="40" src="/assets/icons8-large-courier-truck-64.png" />
-     <span>{{title}}</span>
+      <span>{{ title }}</span>
     </div>
     <div class="status-item">
       <SfImage :width="30" :height="40" src="/assets/icons8-large-courier-truck-64.png" />
@@ -30,11 +30,11 @@ export default {
     LHeaderStatus
   },
   mixins: [StoryblokMixin],
-    computed: {
-        ...mapState({
+  computed: {
+    ...mapState({
       isWebpSupported: (state) => state.ui.isWebpSupported
     }),
-        title () {
+    title () {
       return this.story && this.story['global'] ? this.story['global'].content.header_links[1].confidence_message[0].confidence_title : '';
     }
   }
