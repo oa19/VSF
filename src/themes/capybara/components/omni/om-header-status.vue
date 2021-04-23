@@ -49,7 +49,7 @@ export default {
   align-items: center;
   background: var(--c-primary);
   color: white;
-  height: 55px;
+  height: 50px;
   .status-item {
     display: flex;
     justify-content: center;
