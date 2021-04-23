@@ -39,7 +39,7 @@
 
 <script>
 import { SfButton } from '@storefront-ui/vue';
-const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+import axios from 'axios'
 
 export default {
   components: {
@@ -51,45 +51,16 @@ export default {
     };
   },
   methods: {
-    onSubmit () {
-      const xmlhttp = new XMLHttpRequest();
-      xmlhttp.open('POST', 'http://www.val.etgws.co.uk/VRMValuationService.asmx', true);
-
-      const bodyRequest = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-        <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://www.w3.org/2003/05/soap-envelope">
-          <SOAP-ENV:Header>
-            <vrm:SecuritySoapHeader xmlns:vrm="EurotaxGlass's/WebServices/VRMValuation">
-              <vrm:ClientCode>Test</vrm:ClientCode>
-              <vrm:AccountName>Onmi_Auto</vrm:AccountName>
-              <vrm:Password>gtr*)87Jk1</vrm:Password>
-              <vrm:Success>false</vrm:Success>
-              <vrm:Denial>true</vrm:Denial>
-            </vrm:SecuritySoapHeader>
-          </SOAP-ENV:Header>
-          <SOAP-ENV:Body>
-            <vrm:GetVRMValuation xmlns:vrm="EurotaxGlass's/WebServices/VRMValuation">
-              <vrm:vrmValueRequest>
-                <vrm:VRM>${this.vrm}</vrm:VRM>
-                <vrm:Mileage>1000</vrm:Mileage>
-              </vrm:vrmValueRequest>
-            </vrm:GetVRMValuation>
-          </SOAP-ENV:Body>
-        </SOAP-ENV:Envelope>`;
-
-      xmlhttp.onreadystatechange = function () {
-        if (xmlhttp.readyState === 4) {
-          if (xmlhttp.status === 200) {
-            console.log(xmlhttp.responseText);
-            // alert('done. use firebug/console to see network response');
-          }
+    async onSubmit () {
+      const {
+        data: {
+          result: { national_code }
         }
-      }
+      } = await axios.post('http://localhost:8080/api/new-vehicle', {
+        vrm: this.vrm
+      })
 
-      xmlhttp.setRequestHeader('Content-Type', 'text/xml;charset=UTF-8');
-      xmlhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
-      xmlhttp.setRequestHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-      xmlhttp.setRequestHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
-      xmlhttp.send(bodyRequest);
+      console.log(national_code)
     }
   }
 };
