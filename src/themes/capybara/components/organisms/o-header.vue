@@ -82,7 +82,7 @@ import MMenu from 'theme/components/molecules/m-menu';
 import { formatCategoryLink } from '@vue-storefront/core/modules/url/helpers';
 import { getTopLevelCategories } from 'theme/helpers';
 import OmHeaderStatus from 'theme/components/omni/om-header-status.vue';
-import OmHeaderTopBar from 'theme/components/omni/om-header-status.vue';
+import OmHeaderTopBar from 'theme/components/omni/om-top-bar.vue'; // M Review
 import OmVehicleIcon from 'theme/components/omni/icons/om-vehicle-icon.vue';
 import StoryblokMixin from 'src/modules/storyblok/components/StoryblokMixin';
 import { Logger } from '@vue-storefront/core/lib/logger';

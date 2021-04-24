@@ -47,9 +47,9 @@ export default {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background: var(--c-primary);
+  background: #16a085;
   color: white;
-  height: 50px;
+  height: 60px;
   .status-item {
     display: flex;
     justify-content: center;

@@ -43,7 +43,7 @@ export default {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background: var(--c-light-variant);
+  background: #222;
   color: white;
   height: 38px;
   .status-item {
