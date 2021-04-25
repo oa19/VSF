@@ -25,6 +25,7 @@ import { registerModule } from '@vue-storefront/core/lib/modules';
 
 // TODO:distributed across proper pages BEFORE 1.11
 export function registerClientModules () {
+  registerModule(ExternalCheckout);
   registerModule(UrlModule);
   registerModule(CatalogModule);
   // registerModule(CheckoutModule); // To Checkout
@@ -50,6 +51,4 @@ export function registerClientModules () {
 // Deprecated API, will be removed in 2.0
 export const registerModules: VueStorefrontModule[] = [
   // Example
-  registerModule(ExternalCheckout)
-
 ];
