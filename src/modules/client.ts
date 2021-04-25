@@ -3,7 +3,7 @@ import { CatalogModule } from '@vue-storefront/core/modules/catalog';
 import { CatalogNextModule } from '@vue-storefront/core/modules/catalog-next';
 import { ExternalCheckout } from './external-checkout';
 import { CartModule } from '@vue-storefront/core/modules/cart';
-//import { CheckoutModule } from '@vue-storefront/core/modules/checkout';
+// import { CheckoutModule } from '@vue-storefront/core/modules/checkout';
 import { CompareModule } from '@vue-storefront/core/modules/compare';
 import { WishlistModule } from '@vue-storefront/core/modules/wishlist';
 import { NotificationModule } from '@vue-storefront/core/modules/notification';
@@ -27,7 +27,7 @@ import { registerModule } from '@vue-storefront/core/lib/modules';
 export function registerClientModules () {
   registerModule(UrlModule);
   registerModule(CatalogModule);
-  //registerModule(CheckoutModule); // To Checkout
+  // registerModule(CheckoutModule); // To Checkout
   registerModule(CartModule);
   registerModule(PaymentBackendMethodsModule);
   registerModule(PaymentCashOnDeliveryModule);
@@ -51,5 +51,5 @@ export function registerClientModules () {
 export const registerModules: VueStorefrontModule[] = [
   // Example
   registerModule(ExternalCheckout)
- 
+
 ];
