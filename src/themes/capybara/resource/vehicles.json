@@ -33,5 +33,15 @@
       "National_code": "123",
       "Image": "https://res.cloudinary.com/omniauto/image/upload/v1616070130/s0523138_koxc7p.jpg"
     }
+  ],
+  "rates": [
+    {
+      "brand": "BMW",
+      "rate": "15"
+    },
+    {
+      "brand": "Land Rover",
+      "rate": "18"
+    }
   ]
 }

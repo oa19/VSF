@@ -20,6 +20,7 @@
 
 <script>
 import { SfRadio } from '@storefront-ui/vue';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'OmAddCartStep2',
@@ -41,8 +42,15 @@ export default {
     };
   },
   methods: {
+    ...mapActions({
+      openVehicleCart: 'ui/toggleSidebar'
+    }),
     clickHanlder (value) {
       this.selectedRadio = value;
+
+      if (value === 'clickCollect' || value === 'haveItem') {
+        this.openVehicleCart({ type: 'locationcart' })
+      }
     }
   }
 };

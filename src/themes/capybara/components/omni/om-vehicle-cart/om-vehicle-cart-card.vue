@@ -42,6 +42,11 @@ export default {
       }
     }
   }
+  // methods: {
+  //   handleClick () {
+  //     console.log('hey')
+  //   }
+  // }
 };
 </script>
 <style lang="scss" scoped>
@@ -55,6 +60,7 @@ export default {
   overflow: hidden;
   background: white;
   margin: var(--spacer-sm) 0;
+  cursor: pointer;
   @include for-desktop {
     ::v-deep .sf-call-to-action {
       --call-to-action-padding: 0 0;
@@ -75,6 +81,11 @@ export default {
     letter-spacing: 3px;
     z-index: 1;
   }
+  // &:hover {
+  //   .title {
+  //     text-decoration: underline;
+  //   }
+  // }
   .sf-image {
     height: 120px;
     display: flex;

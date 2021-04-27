@@ -31,6 +31,9 @@ export const uiStore = {
     },
     isVehicleCartOpen: ({ sidebar }) => {
       return sidebar.type === 'vehiclecart' && sidebar.open;
+    },
+    isLocationCartOpen: ({ sidebar }) => {
+      return sidebar.type === 'locationcart' && sidebar.open;
     }
   },
   mutations: {
