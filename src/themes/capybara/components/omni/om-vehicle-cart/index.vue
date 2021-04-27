@@ -165,7 +165,6 @@ export default {
     this.isVehicleCartVisible = true;
     this.activeVehicle = VehicleStorage.getActiveVehicleData()
     this.vehicles = VehicleStorage.getSavedVehiclesData()
-    console.log(this.vehicles, 'hey')
   }
 };
 </script>
